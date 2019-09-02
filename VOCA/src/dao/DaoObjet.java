@@ -2,7 +2,7 @@ package dao;
 
 import javax.persistence.EntityManager;
 
-import model.Objet;
+import model.Thing;
 
 public class DaoObjet {
 	
@@ -20,7 +20,7 @@ public class DaoObjet {
 		em = DAO.getDAO().getEM();
 	}
 	
-	public void persist(Objet o)
+	public void persist(Thing o)
 	{
 		em.getTransaction().begin();
 		em.persist(o);

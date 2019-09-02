@@ -13,7 +13,7 @@ import javax.persistence.Persistence;
 import org.h2.tools.Server;
 
 import model.Huteur;
-import model.Objet;
+import model.Thing;
 
 
 
@@ -67,8 +67,8 @@ public class DAO {
 	
 	public void test() {
 		Huteur h =  new Huteur();
-		Objet o = new Objet();
-		List<Objet> lo = new ArrayList<Objet>();
+		Thing o = new Thing();
+		List<Thing> lo = new ArrayList<Thing>();
 		lo.add(o);
 		h.setObjets(lo);
 		//h.addObjet(o);

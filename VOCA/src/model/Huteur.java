@@ -35,18 +35,18 @@ public class Huteur {
 	}
 	
 	
-	public List<Objet> getObjets() {
+	public List<Thing> getObjets() {
 		return objets;
 	}
 
-	public void setObjets(List<Objet> objets) {
+	public void setObjets(List<Thing> objets) {
 		this.objets = objets;
 	}
 
 	@OneToMany(cascade=CascadeType.ALL)
-	private List<Objet> objets;
+	private List<Thing> objets;
 	
-	public void addObjet(Objet o)
+	public void addObjet(Thing o)
 	{
 		getObjets().add(o);
 	}
