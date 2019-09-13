@@ -41,6 +41,12 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		
+		//préinitialisation de la BD
+		//évite un délai à la création du premier objet
+		//inutile par la suite quand l'utilisateur sera inséré dans la base
+		// après l'écran de présentation
+		DAO.getDAO();
+		
 		VocaController ctr = new VocaController();
 		
 		VocaView view = new VocaView(primaryStage, ctr);

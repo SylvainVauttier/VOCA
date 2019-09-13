@@ -2,18 +2,24 @@ package application;
 
 
 import dao.DaoObjet;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
@@ -32,8 +38,11 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Translate;
+import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.stage.Window;
 import model.IoTClassNames;
 import model.Thing;
 
@@ -96,13 +105,75 @@ public class VocaView {
 //			root.setTop(mb);
 			
 //			
-			
+			primaryStage.setMaximized(true);
 			primaryStage.show();
 			
-			dao.DAO.getDAO().test();
+			buildAndShowWelcome(primaryStage);
+			
+			//dao.DAO.getDAO().test();
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
+		
+	}
+
+	private void buildAndShowWelcome(Stage primaryStage) {
+		// TODO Auto-generated method stub
+		Image image = new Image(getClass().getResourceAsStream("../img/Consignes.png"));
+		//BackgroundImage bi = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(100, 100, true, true, true, false));
+		//Background bg = new Background(bi);
+		
+//		 ButtonType loginButtonType = new ButtonType("Commencer");
+//		 Dialog<Void> dialog = new Dialog<>();
+//		 dialog.setHeaderText("Imaginez votre appartement du futur");
+//		 dialog.setGraphic(new ImageView(image));
+//		 dialog.setWidth(600);
+//		 dialog.setHeight(400);
+//		 dialog.getDialogPane().getButtonTypes().add(loginButtonType);
+//		 boolean disabled = false; // computed based on content of text fields, for example
+//		 dialog.getDialogPane().lookupButton(loginButtonType).setDisable(disabled);
+//		 //dialog.getDialogPane().setBackground(bg);
+//		 dialog.showAndWait();
+		
+		Stage welcome = new Stage(StageStyle.UTILITY);
+		//root.getChildren().add(welcome);
+		
+		BackgroundImage bi = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(100, 100, true, true, true, false));
+		Background bg = new Background(bi);
+		BorderPane wp = new BorderPane();
+		
+		welcome.setScene(new Scene(wp,1200,680));
+		wp.setBackground(bg);
+		wp.setEffect(new DropShadow());
+		
+		Button wb = new Button("Commencer");
+		wb.setOnAction(actionEvent->{
+			welcome.hide();
+		});
+//		wb.getStyleClass().add("round-red");
+//		wb.getStyleClass().add("welcome-button");
+		wb.setStyle("-fx-background-color: linear-gradient(#ff5400, #be1d00);\r\n" + 
+				"    -fx-background-radius: 30;\r\n" + 
+				"    -fx-border-radius: 30;\r\n" + 
+				"    -fx-background-insets: 0;\r\n" + 
+				"    -fx-text-fill: white;"+
+				"-fx-font-size: 24");
+		
+		wp.setCenter(wb);
+		wp.setAlignment(wb,Pos.BOTTOM_RIGHT);
+		wp.setPadding(new Insets(20));
+		
+		
+		welcome.initModality(Modality.APPLICATION_MODAL);
+		welcome.setResizable(false);
+		welcome.centerOnScreen();
+		
+		
+		welcome.setOnCloseRequest(windowEvent->{
+			Platform.exit();
+		});
+		
+		welcome.show();
 		
 	}
 
@@ -133,13 +204,13 @@ public class VocaView {
 		
 		Button charger = new Button("Charger");
 		charger.setMaxWidth(Double.MAX_VALUE);
-		//charger.getStyleClass().add("round-red");
+		charger.getStyleClass().add("round-red");
 		Button sauver = new Button("Sauver");
 		sauver.setMaxWidth(Double.MAX_VALUE);
-		//sauver.getStyleClass().add("round-red");
+		sauver.getStyleClass().add("round-red");
 		Button nouveau = new Button("Nouveau");
 		nouveau.setMaxWidth(Double.MAX_VALUE);
-		//nouveau.getStyleClass().add("round-red");
+		nouveau.getStyleClass().add("round-red");
 		//ctrl.getChildren().addAll(lb1,huteur,lb2,scen,nouveau,charger,sauver);
 		ctrl.addColumn(0,lb1,huteur,lb2,scen,nouveau,charger,sauver);
 		
@@ -294,6 +365,7 @@ public class VocaView {
 				public void handle(ActionEvent event) {
 					// TODO Auto-generated method stub
 					selectedIoTtool=IoTindex;
+					//VocaView.centerPane.requestFocus();
 				}
 
 				public EventHandler<ActionEvent> init(int i) {
