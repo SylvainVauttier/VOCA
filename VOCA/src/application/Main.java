@@ -50,6 +50,7 @@ public class Main extends Application {
 		VocaController ctr = new VocaController();
 		
 		VocaView view = new VocaView(primaryStage, ctr);
+		ctr.setView(view);
 	}
 	
 	

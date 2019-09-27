@@ -12,7 +12,9 @@ import javax.persistence.Persistence;
 
 import org.h2.tools.Server;
 
+import model.Agencement;
 import model.Huteur;
+import model.Scenario;
 import model.Thing;
 
 
@@ -20,12 +22,41 @@ import model.Thing;
 public class DAO {
 	
 	static DAO dao;
+	static DAOGen<Scenario> scdao;
+	static DAOGen<Huteur> hdao;
+	private static DAOGen<Thing> tdao;
+	private static DAOGen<Agencement> agdao;
+
 	
 	static public DAO getDAO() {
 		if (dao==null) dao = new DAO();
 		return dao;
 	}
 	
+	static public DAOGen<Scenario> getScenarioDAO() {
+		if (scdao==null) scdao = new DAOGen<Scenario>();
+		return scdao;
+	}
+	
+	public static DAOGen<Huteur> getHuteurDAO() {
+		// TODO Auto-generated method stub
+		if (hdao==null) hdao = new DAOGen<Huteur>();
+		return hdao;	
+		}
+	
+	public static DAOGen<Thing> getThingDAO() {
+		// TODO Auto-generated method stub
+		if (tdao==null) tdao = new DAOGen<Thing>();
+		return tdao;	
+	}
+	
+	public static DAOGen<Agencement> getAgencementDAO() {
+		// TODO Auto-generated method stub
+		if (agdao==null) agdao = new DAOGen<Agencement>();
+		return agdao;
+	}
+	
+
 	Server server = null;
 	Connection conn = null;
 	EntityManager em;
@@ -57,6 +88,9 @@ public class DAO {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
+		// on laisse une petite chance aux modifications d'être écrites dans la base avant fermeture
+		em.getTransaction().begin();
+		em.getTransaction().commit();
 		server.stop();
 	}
 
@@ -76,5 +110,4 @@ public class DAO {
 		em.persist(h);
 		em.getTransaction().commit();
 	}
-
 }

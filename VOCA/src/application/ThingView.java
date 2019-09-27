@@ -3,6 +3,7 @@ package application;
 
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
@@ -24,6 +25,8 @@ public class ThingView extends Rectangle {
 	Text label = null;
 	double labelOffset;
 	//ImagePattern icone;
+	protected Thing model;
+	boolean active=false;
 	
 	public ThingView(double x, double y) {
 		super(x,y,30,30);
@@ -96,7 +99,7 @@ public class ThingView extends Rectangle {
 //		});
 		
 		this.setOnContextMenuRequested(contextMenuEvent->{
-			System.out.append("menu");
+			//System.out.append("menu");
 			VocaView.thingContextMenu.show(this,contextMenuEvent.getScreenX(),contextMenuEvent.getScreenY());
 		});
 	}
@@ -104,6 +107,11 @@ public class ThingView extends Rectangle {
 
 	public void paint(Pane p)
 	{
+		ColorAdjust ca = new ColorAdjust();
+		if (active) ca.setBrightness(1);
+		else ca.setBrightness(0.5);
+		ca.setInput(new DropShadow());
+		this.setEffect(ca);
 		p.getChildren().addAll(this,this.label);
 	}
 	
@@ -118,6 +126,28 @@ public class ThingView extends Rectangle {
 	public void erase(Pane p)
 	{
 	  p.getChildren().removeAll(this,this.label);
+	}
+
+
+	public void toggle() {
+		// TODO Auto-generated method stub
+		ColorAdjust ca = new ColorAdjust();
+		
+		if (active)
+		{
+			active=false;
+			ca.setBrightness(0.5);
+			ca.setInput(new DropShadow());
+			this.setEffect(ca);
+		}
+		else
+		{
+			active=true;
+			ca.setBrightness(0);
+			ca.setInput(new DropShadow());
+			this.setEffect(ca);
+		}
+		
 	}
 
 }

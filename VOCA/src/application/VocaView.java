@@ -1,6 +1,9 @@
 package application;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import dao.DaoObjet;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -9,11 +12,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
@@ -43,7 +48,9 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
+import model.Huteur;
 import model.IoTClassNames;
+import model.Scenario;
 import model.Thing;
 
 public class VocaView {
@@ -62,7 +69,13 @@ public class VocaView {
 	
 	BorderPane root;
 	VocaController controler;
+
+	public Scenario currentScenario=null;
+	private List<Scenario> scenarioList = new ArrayList<Scenario>();
+	
 	//protected boolean paneDragged;
+
+	private Huteur currentHuteur;
 	
 	//TabPane tp = new TabPane();
 	
@@ -149,6 +162,7 @@ public class VocaView {
 		Button wb = new Button("Commencer");
 		wb.setOnAction(actionEvent->{
 			welcome.hide();
+			currentHuteur = controler.creerHuteur();
 		});
 //		wb.getStyleClass().add("round-red");
 //		wb.getStyleClass().add("welcome-button");
@@ -180,16 +194,35 @@ public class VocaView {
 	private void buildContextMenu() {
 		// TODO Auto-generated method stub
 		ContextMenu cm = new ContextMenu();
-		MenuItem it1 = new MenuItem("supprimer");
-		MenuItem it2 = new MenuItem("editer");
-		cm.getItems().addAll(it1,it2);
+		MenuItem it1 = new MenuItem("Supprimer");
+		MenuItem it2 = new MenuItem("Editer");
+		MenuItem it3 = new MenuItem("Activer/Désactiver");
+		cm.getItems().addAll(it1,it2,it3);
 		
 		thingContextMenu = cm;
 		
 		it1.setOnAction(actionEvent->{
 			//System.out.println(it1.getParentPopup().getOwnerNode().getClass().getName());
 			//centerPane.getChildren().remove(it1.getParentPopup().getOwnerNode());
-			((ThingView)it1.getParentPopup().getOwnerNode()).erase(centerPane);
+			ThingView tv = (ThingView)it1.getParentPopup().getOwnerNode();
+			if (tv.model.getActivations()==0)
+			{	
+			tv.erase(centerPane);
+			controler.supprimerThing(tv.model);
+			}
+			else
+			{
+				Alert al = new Alert (Alert.AlertType.INFORMATION,"Objet utilisé dans un scénario");
+				al.showAndWait();
+			}
+		});
+		
+		it3.setOnAction(actionEvent->{
+			if (currentScenario==null) return;
+			ThingView tv = (ThingView)it3.getParentPopup().getOwnerNode();
+			tv.toggle();
+			if (tv.active) controler.activate(tv.model);
+			else controler.deactivate(tv.model);
 		});
 	}
 
@@ -197,10 +230,10 @@ public class VocaView {
 		// TODO Auto-generated method stub
 		GridPane ctrl = new GridPane();
 		//TilePane ctrl = new TilePane(Orientation.VERTICAL);
-		Label lb1 = new Label("Huteur :");
-		TextField huteur = new TextField("Huteur");
-		Label lb2 = new Label("Scénario :");
-		TextField scen = new TextField("Scénario");
+		//Label lb1 = new Label("Huteur :");
+		//TextField huteur = new TextField("Huteur");
+		//Label lb2 = new Label("Scénario :");
+		//TextField scen = new TextField("Scénario");
 		
 		Button charger = new Button("Charger");
 		charger.setMaxWidth(Double.MAX_VALUE);
@@ -212,7 +245,25 @@ public class VocaView {
 		nouveau.setMaxWidth(Double.MAX_VALUE);
 		nouveau.getStyleClass().add("round-red");
 		//ctrl.getChildren().addAll(lb1,huteur,lb2,scen,nouveau,charger,sauver);
-		ctrl.addColumn(0,lb1,huteur,lb2,scen,nouveau,charger,sauver);
+		
+		
+		Label lbl3 = new Label("Scénarios");
+		
+		ListView<String> sl = new ListView<String>();
+		
+		sl.setOnMouseClicked(mouseEvent->{
+			currentScenario=scenarioList.get(sl.getSelectionModel().getSelectedIndex());
+		});
+		
+		nouveau.setOnAction(actionEvent->{
+			Scenario nouveauScenario = controler.creerScenario();
+			scenarioList.add(nouveauScenario);
+			sl.getItems().add(nouveauScenario.getName());
+			currentScenario=nouveauScenario;
+			sl.getSelectionModel().selectLast();
+		});
+		
+		ctrl.addColumn(0,nouveau,charger,sauver,lbl3,sl);
 		
 		root.setRight(ctrl);
 		
@@ -277,6 +328,7 @@ public class VocaView {
 				{
 				//Text text = new Text(x,y+40,"name");
 				ThingView view = ThingViewFactory.buildView(selectedIoTtool, x, y);
+				view.model=controler.creerThing(selectedIoTtool, x, y);
 				//view.name=IoTClassNames.names[selectedIoTtool];
 				//pane.getChildren().addAll(view,text);
 				view.paint(pane);
@@ -297,7 +349,7 @@ public class VocaView {
 					draggedThing=null;
 				}
 				
-				DaoObjet.getDao().persist(new Thing());
+				//DaoObjet.getDao().persist(new Thing());
 			}
 			
 		});

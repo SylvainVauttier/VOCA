@@ -5,6 +5,8 @@
   <persistence-unit name="VOCA" transaction-type="RESOURCE_LOCAL">
     <class>model.Huteur</class>
     <class>model.Thing</class>
+    <class>model.Scenario</class>
+    <class>model.Agencement</class>
     <properties>
       <property name="javax.persistence.jdbc.driver" value="org.h2.Driver" />
       <property name="javax.persistence.jdbc.url"
@@ -13,7 +15,7 @@
       <property name="javax.persistence.jdbc.password" value="sa" />
 
       <!-- EclipseLink should create the database schema automatically -->
-      <property name="eclipselink.ddl-generation" value="create-tables" />
+      <property name="eclipselink.ddl-generation" value="create-or-extend-tables" />
       <property name="eclipselink.ddl-generation.output-mode"
         value="database" />
     </properties>
