@@ -2,6 +2,7 @@ package application;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import dao.DaoObjet;
@@ -68,10 +69,12 @@ public class VocaView {
 	public static ThingView pressedThing;
 	
 	BorderPane root;
-	VocaController controler;
+	static public VocaController controler;
 
 	public Scenario currentScenario=null;
 	private List<Scenario> scenarioList = new ArrayList<Scenario>();
+	private List<ThingView> currentThingViewList = null;
+	private HashMap<String,List<ThingView>> agencementList = new HashMap<String,List<ThingView>>();
 	
 	//protected boolean paneDragged;
 
@@ -221,8 +224,16 @@ public class VocaView {
 			if (currentScenario==null) return;
 			ThingView tv = (ThingView)it3.getParentPopup().getOwnerNode();
 			tv.toggle();
-			if (tv.active) controler.activate(tv.model);
-			else controler.deactivate(tv.model);
+			if (tv.active) 
+				{
+				controler.activate(tv.model);
+				currentThingViewList.add(tv);
+				}
+			else 
+				{
+				controler.deactivate(tv.model);
+				currentThingViewList.remove(tv);
+				}
 		});
 	}
 
@@ -235,12 +246,12 @@ public class VocaView {
 		//Label lb2 = new Label("Scénario :");
 		//TextField scen = new TextField("Scénario");
 		
-		Button charger = new Button("Charger");
-		charger.setMaxWidth(Double.MAX_VALUE);
-		charger.getStyleClass().add("round-red");
-		Button sauver = new Button("Sauver");
-		sauver.setMaxWidth(Double.MAX_VALUE);
-		sauver.getStyleClass().add("round-red");
+		Button editer = new Button("Editer");
+		editer.setMaxWidth(Double.MAX_VALUE);
+		editer.getStyleClass().add("round-red");
+		Button supprimer = new Button("Supprimer");
+		supprimer.setMaxWidth(Double.MAX_VALUE);
+		supprimer.getStyleClass().add("round-red");
 		Button nouveau = new Button("Nouveau");
 		nouveau.setMaxWidth(Double.MAX_VALUE);
 		nouveau.getStyleClass().add("round-red");
@@ -252,21 +263,67 @@ public class VocaView {
 		ListView<String> sl = new ListView<String>();
 		
 		sl.setOnMouseClicked(mouseEvent->{
-			currentScenario=scenarioList.get(sl.getSelectionModel().getSelectedIndex());
+			Scenario selectedScenario=scenarioList.get(sl.getSelectionModel().getSelectedIndex());
+			if (currentScenario==null)
+			{
+				currentScenario=selectedScenario;
+				currentThingViewList=agencementList.get(Integer.toString(currentScenario.getOid()));
+				showActiveIoT();
+				return;
+			}
+			if (selectedScenario!=currentScenario)
+			{
+				hideActiveIoT();
+				currentScenario=selectedScenario;
+				currentThingViewList=agencementList.get(Integer.toString(currentScenario.getOid()));
+				showActiveIoT();
+			}
+			//currentScenario=scenarioList.get(sl.getSelectionModel().getSelectedIndex());
 		});
 		
 		nouveau.setOnAction(actionEvent->{
 			Scenario nouveauScenario = controler.creerScenario();
 			scenarioList.add(nouveauScenario);
-			sl.getItems().add(nouveauScenario.getName());
 			currentScenario=nouveauScenario;
+			
+			currentThingViewList = new ArrayList<ThingView>();
+			agencementList.put(Integer.toString(currentScenario.getOid()), currentThingViewList);
+			
+			sl.getItems().add(nouveauScenario.getName());
 			sl.getSelectionModel().selectLast();
 		});
 		
-		ctrl.addColumn(0,nouveau,charger,sauver,lbl3,sl);
+		supprimer.setOnAction(actionEvent->{
+			if (currentScenario==null) return;
+			controler.supprimerScenario(currentScenario);
+			hideActiveIoT();
+			int i=0;
+			for (;;i++)
+				if (currentScenario==scenarioList.get(i)) break;
+			scenarioList.remove(i);
+			sl.getItems().remove(i);
+			sl.getSelectionModel().clearSelection();
+			
+			currentScenario=null;
+			currentThingViewList=null;
+		});
+		
+		ctrl.addColumn(0,nouveau,editer,supprimer,lbl3,sl);
 		
 		root.setRight(ctrl);
 		
+	}
+
+	private void showActiveIoT() {
+		// TODO Auto-generated method stub
+		for (ThingView v : currentThingViewList)
+		v.active();
+	}
+
+	private void hideActiveIoT() {
+		// TODO Auto-generated method stub
+		for (ThingView v : currentThingViewList)
+			v.deactive();
 	}
 
 	private void buildCenterPane() {
@@ -323,7 +380,9 @@ public class VocaView {
 				if (x<0) x=0;
 				if (y<0) y=0;
 				
-				
+				// à corriger à terme
+				// l'évenement n'est pas reçu par le pane si l'on clique sur un thingview
+				// le code fonctionne mais peut être amélioré
 				if (draggedThing==null)
 				{
 				//Text text = new Text(x,y+40,"name");
@@ -346,7 +405,8 @@ public class VocaView {
 					//draggedThing.setX(x);
 					//draggedThing.setY(y);
 					draggedThing.move(x, y);
-					draggedThing=null;
+					controler.moveThing(draggedThing.model,x,y);
+					draggedThing=null;					
 				}
 				
 				//DaoObjet.getDao().persist(new Thing());

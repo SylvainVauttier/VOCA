@@ -8,6 +8,7 @@ import dao.DAO;
 import model.Agencement;
 import model.Huteur;
 import model.IoTClassNames;
+import model.Movement;
 import model.Scenario;
 import model.Thing;
 
@@ -19,11 +20,12 @@ public class VocaController {
 	Scenario creerScenario() {
 		// TODO Auto-generated method stub
 		Scenario sc = new Scenario();
+		sc.setCreationDate(LocalDateTime.now().toString());
 		DAO.getScenarioDAO().persist(sc);
 		
 		sc.setName("Scénario "+sc.getOid());
 		
-		//System.out.println(sc.getOid());
+		huteurActif.addScenario(sc);
 		
 		return sc;
 	}
@@ -35,7 +37,9 @@ public class VocaController {
 		DAO.getHuteurDAO().persist(h);
 		
 		h.setName("Huteur"+h.getOid());
+		
 		h.setObjets(new ArrayList<Thing>());
+		h.setScenarios(new ArrayList<Scenario>());
 
 		return h;
 		
@@ -61,6 +65,8 @@ public class VocaController {
 		// TODO Auto-generated method stub
 		model.setDestroyed(true);
 		model.setDestructionDate(LocalDateTime.now().toString());
+		//FBI : on garde tout l'historique
+		//huteurActif.removeObjet(model);
 	}
 
 	public void deactivate(Thing model) {
@@ -90,6 +96,30 @@ public class VocaController {
 	public void setView(VocaView view) {
 		// TODO Auto-generated method stub
 		this.vocaView=view;
+	}
+
+	public void supprimerScenario(Scenario currentScenario) {
+		// TODO Auto-generated method stub
+		for (Thing t : currentScenario.getThings())
+			t.setActivations(t.getActivations()-1);
+		currentScenario.setDestructionDate(LocalDateTime.now().toString());
+		//FBI itou
+		//huteurActif.removeScenario(currentScenario);
+	}
+
+	public void moveThing(Thing model, double x, double y) {
+		// TODO Auto-generated method stub
+		Movement mv = new Movement();
+		mv.setX(model.getX());
+		mv.setY(model.getY());
+		mv.setDate(LocalDateTime.now().toString());
+		mv.setThing(model);
+		
+		DAO.getDAOMovement().persist(mv);
+		
+		model.setX(x);
+		model.setY(y);
+		
 	}
 
 	

@@ -14,7 +14,7 @@ public class Scenario {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private int oid;
-	
+		
 	public int getOid() {
 		return oid;
 	}
@@ -52,6 +52,26 @@ public class Scenario {
 	public void associate(Thing model) {
 		// TODO Auto-generated method stub
 		getThings().add(model);
+	}
+	
+	private String creationDate;
+	
+	private String destructionDate;
+
+	public String getCreationDate() {
+		return creationDate;
+	}
+
+	public void setCreationDate(String creationDate) {
+		this.creationDate = creationDate;
+	}
+
+	public String getDestructionDate() {
+		return destructionDate;
+	}
+
+	public void setDestructionDate(String destructionDate) {
+		this.destructionDate = destructionDate;
 	}
 
 }

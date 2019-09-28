@@ -43,12 +43,36 @@ public class Huteur {
 		this.objets = objets;
 	}
 
-	@OneToMany(cascade=CascadeType.ALL)
 	private List<Thing> objets;
 	
 	public void addObjet(Thing o)
 	{
 		getObjets().add(o);
+	}
+	
+	public void removeObjet(Thing t)
+	{
+		getObjets().remove(t);
+	}
+	
+	private List<Scenario> scenarios;
+
+	public List<Scenario> getScenarios() {
+		return scenarios;
+	}
+
+	public void setScenarios(List<Scenario> scenarios) {
+		this.scenarios = scenarios;
+	}
+	
+	public void addScenario(Scenario s)
+	{
+		getScenarios().add(s);
+	}
+	
+	public void removeScenario(Scenario s)
+	{
+		getScenarios().remove(s);
 	}
 
 }

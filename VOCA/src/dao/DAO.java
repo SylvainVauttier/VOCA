@@ -14,10 +14,9 @@ import org.h2.tools.Server;
 
 import model.Agencement;
 import model.Huteur;
+import model.Movement;
 import model.Scenario;
 import model.Thing;
-
-
 
 public class DAO {
 	
@@ -26,6 +25,7 @@ public class DAO {
 	static DAOGen<Huteur> hdao;
 	private static DAOGen<Thing> tdao;
 	private static DAOGen<Agencement> agdao;
+	private static DAOGen<Movement> mvdao;
 
 	
 	static public DAO getDAO() {
@@ -54,6 +54,12 @@ public class DAO {
 		// TODO Auto-generated method stub
 		if (agdao==null) agdao = new DAOGen<Agencement>();
 		return agdao;
+	}
+	
+	public static DAOGen<Movement> getDAOMovement() {
+		// TODO Auto-generated method stub
+		if (mvdao==null) mvdao = new DAOGen<Movement>();
+		return mvdao;	
 	}
 	
 
@@ -88,7 +94,7 @@ public class DAO {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
-		// on laisse une petite chance aux modifications d'être écrites dans la base avant fermeture
+		// on laisse une petite chance aux dernières modifications d'être écrites dans la base avant fermeture
 		em.getTransaction().begin();
 		em.getTransaction().commit();
 		server.stop();

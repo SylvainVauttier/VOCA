@@ -61,6 +61,7 @@ public class ThingView extends Rectangle {
 				if (y<0) y=0;
 				
 				VocaView.draggedThing.move(x, y);
+				VocaView.controler.moveThing(VocaView.draggedThing.model,x,y);
 				VocaView.draggedThing=null;
 				
 			}
@@ -131,23 +132,35 @@ public class ThingView extends Rectangle {
 
 	public void toggle() {
 		// TODO Auto-generated method stub
-		ColorAdjust ca = new ColorAdjust();
 		
 		if (active)
 		{
-			active=false;
-			ca.setBrightness(0.5);
-			ca.setInput(new DropShadow());
-			this.setEffect(ca);
+			deactive();
 		}
 		else
-		{
-			active=true;
-			ca.setBrightness(0);
-			ca.setInput(new DropShadow());
-			this.setEffect(ca);
-		}
+		active();
 		
 	}
+	
+	public void active()
+	{
+		active=true;
+		
+		ColorAdjust ca = new ColorAdjust();
+		ca.setBrightness(0);
+		ca.setInput(new DropShadow());
+		this.setEffect(ca);
+	}
+	
+	public void deactive()
+	{
+		active=false;
+		
+		ColorAdjust ca = new ColorAdjust();
+		ca.setBrightness(0.5);
+		ca.setInput(new DropShadow());
+		this.setEffect(ca);
+	}
+	
 
 }
