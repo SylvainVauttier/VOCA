@@ -12,6 +12,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -24,6 +25,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
@@ -69,6 +71,7 @@ public class VocaView {
 	public static ThingView pressedThing;
 	
 	BorderPane root;
+	
 	static public VocaController controler;
 
 	public Scenario currentScenario=null;
@@ -79,6 +82,9 @@ public class VocaView {
 	//protected boolean paneDragged;
 
 	private Huteur currentHuteur;
+
+	private ScenarioEditor scenarioEditor=null;
+	private TextArea scenarioDescriptor = null;
 	
 	//TabPane tp = new TabPane();
 	
@@ -136,23 +142,9 @@ public class VocaView {
 	private void buildAndShowWelcome(Stage primaryStage) {
 		// TODO Auto-generated method stub
 		Image image = new Image(getClass().getResourceAsStream("../img/Consignes.png"));
-		//BackgroundImage bi = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(100, 100, true, true, true, false));
-		//Background bg = new Background(bi);
 		
-//		 ButtonType loginButtonType = new ButtonType("Commencer");
-//		 Dialog<Void> dialog = new Dialog<>();
-//		 dialog.setHeaderText("Imaginez votre appartement du futur");
-//		 dialog.setGraphic(new ImageView(image));
-//		 dialog.setWidth(600);
-//		 dialog.setHeight(400);
-//		 dialog.getDialogPane().getButtonTypes().add(loginButtonType);
-//		 boolean disabled = false; // computed based on content of text fields, for example
-//		 dialog.getDialogPane().lookupButton(loginButtonType).setDisable(disabled);
-//		 //dialog.getDialogPane().setBackground(bg);
-//		 dialog.showAndWait();
 		
 		Stage welcome = new Stage(StageStyle.UTILITY);
-		//root.getChildren().add(welcome);
 		
 		BackgroundImage bi = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(100, 100, true, true, true, false));
 		Background bg = new Background(bi);
@@ -167,6 +159,7 @@ public class VocaView {
 			welcome.hide();
 			currentHuteur = controler.creerHuteur();
 		});
+		//ca ne marche pas et je ne sais pas pourquoi...
 //		wb.getStyleClass().add("round-red");
 //		wb.getStyleClass().add("welcome-button");
 		wb.setStyle("-fx-background-color: linear-gradient(#ff5400, #be1d00);\r\n" + 
@@ -187,7 +180,9 @@ public class VocaView {
 		
 		
 		welcome.setOnCloseRequest(windowEvent->{
-			Platform.exit();
+			//Platform.exit();
+			welcome.hide();
+			currentHuteur = controler.creerHuteur();
 		});
 		
 		welcome.show();
@@ -240,11 +235,6 @@ public class VocaView {
 	private void buildControlPane() {
 		// TODO Auto-generated method stub
 		GridPane ctrl = new GridPane();
-		//TilePane ctrl = new TilePane(Orientation.VERTICAL);
-		//Label lb1 = new Label("Huteur :");
-		//TextField huteur = new TextField("Huteur");
-		//Label lb2 = new Label("Scénario :");
-		//TextField scen = new TextField("Scénario");
 		
 		Button editer = new Button("Editer");
 		editer.setMaxWidth(Double.MAX_VALUE);
@@ -255,30 +245,40 @@ public class VocaView {
 		Button nouveau = new Button("Nouveau");
 		nouveau.setMaxWidth(Double.MAX_VALUE);
 		nouveau.getStyleClass().add("round-red");
-		//ctrl.getChildren().addAll(lb1,huteur,lb2,scen,nouveau,charger,sauver);
+		Button quitter = new Button("Quitter");
+		quitter.setMaxWidth(Double.MAX_VALUE);
+		quitter.getStyleClass().add("round-red");
 		
 		
-		Label lbl3 = new Label("Scénarios");
-		
+		Label ls = new Label("Scénarios");
 		ListView<String> sl = new ListView<String>();
+		sl.setMaxWidth(200);
+		
+		Label ld = new Label("Description");
+		scenarioDescriptor = new TextArea();
+		scenarioDescriptor.setMaxWidth(200);
+		
+		ctrl.addColumn(0,nouveau,editer,supprimer,ls,sl,ld,scenarioDescriptor,quitter);
+		
+		root.setRight(ctrl);
 		
 		sl.setOnMouseClicked(mouseEvent->{
 			Scenario selectedScenario=scenarioList.get(sl.getSelectionModel().getSelectedIndex());
-			if (currentScenario==null)
+			if (currentScenario==null||selectedScenario!=currentScenario)
 			{
 				currentScenario=selectedScenario;
 				currentThingViewList=agencementList.get(Integer.toString(currentScenario.getOid()));
 				showActiveIoT();
-				return;
+				scenarioDescriptor.setText(currentScenario.getDescription());
+				//return;
 			}
-			if (selectedScenario!=currentScenario)
-			{
-				hideActiveIoT();
-				currentScenario=selectedScenario;
-				currentThingViewList=agencementList.get(Integer.toString(currentScenario.getOid()));
-				showActiveIoT();
-			}
-			//currentScenario=scenarioList.get(sl.getSelectionModel().getSelectedIndex());
+//			if (selectedScenario!=currentScenario)
+//			{
+//				hideActiveIoT();
+//				currentScenario=selectedScenario;
+//				currentThingViewList=agencementList.get(Integer.toString(currentScenario.getOid()));
+//				showActiveIoT();
+//			}
 		});
 		
 		nouveau.setOnAction(actionEvent->{
@@ -291,6 +291,8 @@ public class VocaView {
 			
 			sl.getItems().add(nouveauScenario.getName());
 			sl.getSelectionModel().selectLast();
+			
+			scenarioDescriptor.setText("");
 		});
 		
 		supprimer.setOnAction(actionEvent->{
@@ -304,14 +306,77 @@ public class VocaView {
 			sl.getItems().remove(i);
 			sl.getSelectionModel().clearSelection();
 			
+			scenarioDescriptor.setText("");
+			
 			currentScenario=null;
 			currentThingViewList=null;
 		});
 		
-		ctrl.addColumn(0,nouveau,editer,supprimer,lbl3,sl);
+		editer.setOnAction(actionEvent->{
+			if (currentScenario==null) return;
+			openScenarioEditor();
+		});
 		
-		root.setRight(ctrl);
 		
+		
+	}
+
+	private void openScenarioEditor() {
+		// TODO Auto-generated method stub
+		if (scenarioEditor==null) buildScenarioEditor();
+		scenarioEditor.nameTF.setText(currentScenario.getName());
+		if (currentScenario.getDescription()==null)scenarioEditor.descTA.setText("");
+		else scenarioEditor.descTA.setText(currentScenario.getDescription());
+		scenarioEditor.show();
+	}
+
+	private void buildScenarioEditor() {
+		// TODO Auto-generated method stub
+		scenarioEditor=new ScenarioEditor();
+		
+		GridPane grid = new GridPane();
+		grid.setVgap(5);
+        grid.setHgap(10);
+        
+        Label name = new Label("Nom");
+        GridPane.setConstraints(name, 0, 0);
+        grid.getChildren().add(name);
+        
+        scenarioEditor.nameTF = new TextField();
+        GridPane.setConstraints(scenarioEditor.nameTF, 1, 0);
+        grid.getChildren().add(scenarioEditor.nameTF);
+        
+        Label desc = new Label("Description");
+        GridPane.setConstraints(desc, 0, 1);
+        grid.getChildren().add(desc);
+        
+        scenarioEditor.descTA = new TextArea();
+        scenarioEditor.descTA.setWrapText(true);
+        GridPane.setConstraints(scenarioEditor.descTA, 1, 2);
+        grid.getChildren().add(scenarioEditor.descTA);
+        
+        Button ok = new Button("Valider");
+        GridPane.setConstraints(ok, 0, 3);
+        grid.getChildren().add(ok);
+        
+        Button ko = new Button("Annuler");
+        GridPane.setConstraints(ko, 1, 3);
+        grid.getChildren().add(ko);
+        
+        Scene scene = new Scene(grid);
+        scenarioEditor.setScene(scene);
+
+        ok.setOnAction(eventAction->{
+        	scenarioEditor.hide();
+        	controler.modifierScenario(currentScenario,scenarioEditor.nameTF.getText(),scenarioEditor.descTA.getText());
+        	
+        	scenarioDescriptor.setText(scenarioEditor.descTA.getText());
+        });
+        
+        ko.setOnAction(eventAction->{
+        	scenarioEditor.hide();
+        });
+        
 	}
 
 	private void showActiveIoT() {

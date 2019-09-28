@@ -73,5 +73,17 @@ public class Scenario {
 	public void setDestructionDate(String destructionDate) {
 		this.destructionDate = destructionDate;
 	}
+	
+	private String description = "";
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	
+	
 
 }

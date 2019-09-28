@@ -122,6 +122,12 @@ public class VocaController {
 		
 	}
 
+	public void modifierScenario(Scenario currentScenario, String name, String desc) {
+		// TODO Auto-generated method stub
+		currentScenario.setName(name);
+		currentScenario.setDescription(desc);
+	}
+
 	
 	
 }
