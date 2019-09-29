@@ -161,6 +161,15 @@ public class ThingView extends Rectangle {
 		ca.setInput(new DropShadow());
 		this.setEffect(ca);
 	}
+
+
+	public void changeLabel(String text) {
+		// TODO Auto-generated method stub
+		label.setText(text);
+		Bounds lb = label.getBoundsInLocal();
+		labelOffset=15-lb.getWidth()/2;
+		label.setX(getX()+labelOffset);
+	}
 	
 
 }

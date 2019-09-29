@@ -86,6 +86,8 @@ public class VocaView {
 	private ScenarioEditor scenarioEditor=null;
 	private TextArea scenarioDescriptor = null;
 	private ListView<String> scenarioListView;
+
+	private ThingEditor thingEditor;
 	
 	//TabPane tp = new TabPane();
 	
@@ -231,6 +233,17 @@ public class VocaView {
 				currentThingViewList.remove(tv);
 				}
 		});
+		
+		it2.setOnAction(actionEvent->{
+			ThingView tv = (ThingView)it3.getParentPopup().getOwnerNode();
+			showThingEditor(tv);
+		});
+	}
+
+	private void showThingEditor(ThingView tv) {
+		// TODO Auto-generated method stub
+		if (thingEditor==null) thingEditor=new ThingEditor(controler);
+		thingEditor.show(tv);
 	}
 
 	private void buildControlPane() {
@@ -462,6 +475,7 @@ public class VocaView {
 				//view.name=IoTClassNames.names[selectedIoTtool];
 				//pane.getChildren().addAll(view,text);
 				view.paint(pane);
+				selectedIoTtool=-1;
 				}
 				else
 				{

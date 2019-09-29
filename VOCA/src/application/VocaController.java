@@ -52,6 +52,7 @@ public class VocaController {
 		t.setX(x);
 		t.setY(y);
 		t.setCreationDate(LocalDateTime.now().toString());
+		t.setName(IoTClassNames.names[selectedIoTtool]);
 		
 		DAO.getThingDAO().persist(t);
 		
@@ -126,6 +127,12 @@ public class VocaController {
 		// TODO Auto-generated method stub
 		currentScenario.setName(name);
 		currentScenario.setDescription(desc);
+	}
+
+	public void modifier(Thing thing, String name, String desc) {
+		// TODO Auto-generated method stub
+		thing.setName(name);
+		thing.setDescription(desc);
 	}
 
 	
