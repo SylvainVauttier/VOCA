@@ -286,6 +286,8 @@ public class VocaView {
 		nouveau.setOnAction(actionEvent->{
 			Scenario nouveauScenario = controler.creerScenario();
 			scenarioList.add(nouveauScenario);
+			
+			if (currentScenario!=null) hideActiveIoT();
 			currentScenario=nouveauScenario;
 			
 			currentThingViewList = new ArrayList<ThingView>();
