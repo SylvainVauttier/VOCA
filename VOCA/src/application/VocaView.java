@@ -2,11 +2,18 @@ package application;
 
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.Optional;
 
 import dao.DaoObjet;
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -68,7 +75,7 @@ public class VocaView {
 	
 	static int selectedIoTtool = -1;
 
-	public static ThingView pressedThing;
+	public static ThingView pressedThing=null;
 	
 	BorderPane root;
 	
@@ -78,6 +85,7 @@ public class VocaView {
 	private List<Scenario> scenarioList = new ArrayList<Scenario>();
 	private List<ThingView> currentThingViewList = null;
 	private HashMap<String,List<ThingView>> agencementList = new HashMap<String,List<ThingView>>();
+	private List<ThingView> globalThingViewList = new ArrayList<ThingView>();
 	
 	//protected boolean paneDragged;
 
@@ -88,6 +96,8 @@ public class VocaView {
 	private ListView<String> scenarioListView;
 
 	private ThingEditor thingEditor;
+	
+	private Stage welcome;
 	
 	//TabPane tp = new TabPane();
 	
@@ -147,7 +157,7 @@ public class VocaView {
 		Image image = new Image(getClass().getResourceAsStream("../img/Consignes.png"));
 		
 		
-		Stage welcome = new Stage(StageStyle.UTILITY);
+		welcome = new Stage(StageStyle.UTILITY);
 		
 		BackgroundImage bi = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(100, 100, true, true, true, false));
 		Background bg = new Background(bi);
@@ -159,10 +169,12 @@ public class VocaView {
 		
 		Button wb = new Button("Commencer");
 		wb.setOnAction(actionEvent->{
-			welcome.hide();
-			currentHuteur = controler.creerHuteur();
+//			welcome.hide();
+//			currentHuteur = controler.creerHuteur();
+			startGame();
 		});
 		//ca ne marche pas et je ne sais pas pourquoi...
+		// à vérifier si cela ne dépend pas du stage ou de la scene
 //		wb.getStyleClass().add("round-red");
 //		wb.getStyleClass().add("welcome-button");
 		wb.setStyle("-fx-background-color: linear-gradient(#ff5400, #be1d00);\r\n" + 
@@ -184,12 +196,19 @@ public class VocaView {
 		
 		welcome.setOnCloseRequest(windowEvent->{
 			//Platform.exit();
-			welcome.hide();
-			currentHuteur = controler.creerHuteur();
+//			welcome.hide();
+//			currentHuteur = controler.creerHuteur();
+			startGame();
 		});
 		
 		welcome.show();
 		
+	}
+	
+	private void startGame()
+	{
+		welcome.hide();
+		currentHuteur = controler.creerHuteur();
 	}
 
 	private void buildContextMenu() {
@@ -210,6 +229,7 @@ public class VocaView {
 			{	
 			tv.erase(centerPane);
 			controler.supprimerThing(tv.model);
+			globalThingViewList.remove(tv);
 			}
 			else
 			{
@@ -334,8 +354,39 @@ public class VocaView {
 			openScenarioEditor();
 		});
 		
+		quitter.setOnAction(actionEvent->{
+			Alert al = new Alert (Alert.AlertType.CONFIRMATION,"Attention ! Toute sortie est définitive !!!");
+			Optional<ButtonType> result=al.showAndWait();
+			if (result.isPresent() && result.get() == ButtonType.OK)
+			reinitGame();
+		});
 		
 		
+		
+	}
+
+	private void reinitGame() {
+		// TODO Auto-generated method stub
+		selectedIoTtool=-1;
+		
+		cleanHouse(centerPane);
+		
+		scenarioListView.getItems().clear();
+		scenarioDescriptor.setText("");
+		scenarioList = new ArrayList<Scenario>();
+		agencementList = new HashMap<String,List<ThingView>>();
+		globalThingViewList = new ArrayList<ThingView>();
+		currentThingViewList = null;
+		
+		currentHuteur=null;
+		currentScenario=null;
+		welcome.show();
+	}
+
+	private void cleanHouse(Pane p) {
+		// TODO Auto-generated method stub
+		for (ThingView tv : globalThingViewList)
+			tv.erase(p);
 	}
 
 	private void openScenarioEditor() {
@@ -475,6 +526,8 @@ public class VocaView {
 				//view.name=IoTClassNames.names[selectedIoTtool];
 				//pane.getChildren().addAll(view,text);
 				view.paint(pane);
+				globalThingViewList.add(view);
+				//évite d'ajouter à chaque clic un Iot
 				selectedIoTtool=-1;
 				}
 				else
@@ -501,11 +554,14 @@ public class VocaView {
 		
 		pane.setOnMouseDragged(mouseEvent->{
 			
+			
+			
 			if (pressedThing!=null)
 			{
 				draggedThing=pressedThing;
-				pressedThing=null;
+				//pressedThing=null;
 			}
+			if (draggedThing==null) return;
 			
 			double x = mouseEvent.getX();
 			double y = mouseEvent.getY();
