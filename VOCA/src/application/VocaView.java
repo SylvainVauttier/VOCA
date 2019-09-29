@@ -85,6 +85,7 @@ public class VocaView {
 
 	private ScenarioEditor scenarioEditor=null;
 	private TextArea scenarioDescriptor = null;
+	private ListView<String> scenarioListView;
 	
 	//TabPane tp = new TabPane();
 	
@@ -251,21 +252,22 @@ public class VocaView {
 		
 		
 		Label ls = new Label("Scénarios");
-		ListView<String> sl = new ListView<String>();
-		sl.setMaxWidth(200);
+		scenarioListView = new ListView<String>();
+		scenarioListView.setMaxWidth(200);
 		
 		Label ld = new Label("Description");
 		scenarioDescriptor = new TextArea();
 		scenarioDescriptor.setMaxWidth(200);
 		
-		ctrl.addColumn(0,nouveau,editer,supprimer,ls,sl,ld,scenarioDescriptor,quitter);
+		ctrl.addColumn(0,nouveau,editer,supprimer,ls,scenarioListView,ld,scenarioDescriptor,quitter);
 		
 		root.setRight(ctrl);
 		
-		sl.setOnMouseClicked(mouseEvent->{
-			Scenario selectedScenario=scenarioList.get(sl.getSelectionModel().getSelectedIndex());
+		scenarioListView.setOnMouseClicked(mouseEvent->{
+			Scenario selectedScenario=scenarioList.get(scenarioListView.getSelectionModel().getSelectedIndex());
 			if (currentScenario==null||selectedScenario!=currentScenario)
 			{
+				if (currentScenario!=null) hideActiveIoT();
 				currentScenario=selectedScenario;
 				currentThingViewList=agencementList.get(Integer.toString(currentScenario.getOid()));
 				showActiveIoT();
@@ -289,8 +291,8 @@ public class VocaView {
 			currentThingViewList = new ArrayList<ThingView>();
 			agencementList.put(Integer.toString(currentScenario.getOid()), currentThingViewList);
 			
-			sl.getItems().add(nouveauScenario.getName());
-			sl.getSelectionModel().selectLast();
+			scenarioListView.getItems().add(nouveauScenario.getName());
+			scenarioListView.getSelectionModel().selectLast();
 			
 			scenarioDescriptor.setText("");
 		});
@@ -303,8 +305,8 @@ public class VocaView {
 			for (;;i++)
 				if (currentScenario==scenarioList.get(i)) break;
 			scenarioList.remove(i);
-			sl.getItems().remove(i);
-			sl.getSelectionModel().clearSelection();
+			scenarioListView.getItems().remove(i);
+			scenarioListView.getSelectionModel().clearSelection();
 			
 			scenarioDescriptor.setText("");
 			
@@ -370,6 +372,8 @@ public class VocaView {
         	scenarioEditor.hide();
         	controler.modifierScenario(currentScenario,scenarioEditor.nameTF.getText(),scenarioEditor.descTA.getText());
         	
+        	int selection = scenarioListView.getSelectionModel().getSelectedIndex();
+        	scenarioListView.getItems().set(selection, scenarioEditor.nameTF.getText());
         	scenarioDescriptor.setText(scenarioEditor.descTA.getText());
         });
         
