@@ -34,6 +34,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -590,7 +591,7 @@ public class VocaView {
 	private void buildIotPane() {
 		// TODO Auto-generated method stub
 		TabPane tp = new TabPane();
-		Tab tab1 = new Tab("IoT");
+		Tab tab1 = new Tab("Objets");
 		GridPane gp1 = new GridPane();
 		
 		int IoTSize = IoTClassNames.names.length;
@@ -602,6 +603,8 @@ public class VocaView {
 			Image ic = new Image(getClass().getResourceAsStream("../img/"+IoTClassNames.names[i]+".png"),30,30,true,true);
 			Button bt = new Button();
 			bt.setGraphic(new ImageView(ic));
+			Tooltip tt = new Tooltip(IoTClassNames.names[i]+"\n"+"Cliquer sur l'outil puis sur le plan pour créer un objet de ce type");
+			bt.setTooltip(tt);
 			gp1.add(bt,column,row);
 			
 			if (column==1)
