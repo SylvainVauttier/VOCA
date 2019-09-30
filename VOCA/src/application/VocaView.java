@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Optional;
 
+import javax.xml.ws.handler.MessageContext.Scope;
+
 import dao.DaoObjet;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
@@ -18,8 +20,10 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -29,6 +33,7 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -484,6 +489,8 @@ public class VocaView {
 		sp.setPannable(false);
 		sp.setFitToHeight(true);
 		sp.setFitToWidth(true);
+		sp.setVvalue(0.5);
+		sp.setHvalue(0.5);
 		
 		root.setCenter(sp);
 		
