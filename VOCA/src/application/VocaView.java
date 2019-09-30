@@ -14,6 +14,7 @@ import javax.xml.ws.handler.MessageContext.Scope;
 import dao.DaoObjet;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -33,12 +34,16 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Slider;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
@@ -53,7 +58,9 @@ import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
@@ -180,7 +187,7 @@ public class VocaView {
 			startGame();
 		});
 		//ca ne marche pas et je ne sais pas pourquoi...
-		// ‡ vÈrifier si cela ne dÈpend pas du stage ou de la scene
+		// √† v√©rifier si cela ne d√©pend pas du stage ou de la scene
 //		wb.getStyleClass().add("round-red");
 //		wb.getStyleClass().add("welcome-button");
 		wb.setStyle("-fx-background-color: linear-gradient(#ff5400, #be1d00);\r\n" + 
@@ -214,6 +221,7 @@ public class VocaView {
 	private void startGame()
 	{
 		welcome.hide();
+		buildUserInfo();
 		currentHuteur = controler.creerHuteur();
 	}
 
@@ -222,7 +230,7 @@ public class VocaView {
 		ContextMenu cm = new ContextMenu();
 		MenuItem it1 = new MenuItem("Supprimer");
 		MenuItem it2 = new MenuItem("Editer");
-		MenuItem it3 = new MenuItem("Activer/DÈsactiver");
+		MenuItem it3 = new MenuItem("Activer/D√©sactiver");
 		cm.getItems().addAll(it1,it2,it3);
 		
 		thingContextMenu = cm;
@@ -239,7 +247,7 @@ public class VocaView {
 			}
 			else
 			{
-				Alert al = new Alert (Alert.AlertType.INFORMATION,"Objet utilisÈ dans un scÈnario");
+				Alert al = new Alert (Alert.AlertType.INFORMATION,"Objet utilis√© dans un sc√©nario");
 				al.showAndWait();
 			}
 		});
@@ -290,7 +298,7 @@ public class VocaView {
 		quitter.getStyleClass().add("round-red");
 		
 		
-		Label ls = new Label("ScÈnarios");
+		Label ls = new Label("Sc√©narios");
 		scenarioListView = new ListView<String>();
 		scenarioListView.setMaxWidth(200);
 		
@@ -361,7 +369,7 @@ public class VocaView {
 		});
 		
 		quitter.setOnAction(actionEvent->{
-			Alert al = new Alert (Alert.AlertType.CONFIRMATION,"Attention ! Toute sortie est dÈfinitive !!!");
+			Alert al = new Alert (Alert.AlertType.CONFIRMATION,"Attention ! Toute sortie est d√©finitive !!!");
 			Optional<ButtonType> result=al.showAndWait();
 			if (result.isPresent() && result.get() == ButtonType.OK)
 			reinitGame();
@@ -523,9 +531,9 @@ public class VocaView {
 				if (x<0) x=0;
 				if (y<0) y=0;
 				
-				// ‡ corriger ‡ terme
-				// l'Èvenement n'est pas reÁu par le pane si l'on clique sur un thingview
-				// le code fonctionne mais peut Ítre amÈliorÈ
+				// √† corriger √† terme
+				// l'√©venement n'est pas re√ßu par le pane si l'on clique sur un thingview
+				// le code fonctionne mais peut √™tre am√©lior√©
 				if (draggedThing==null)
 				{
 				//Text text = new Text(x,y+40,"name");
@@ -535,7 +543,7 @@ public class VocaView {
 				//pane.getChildren().addAll(view,text);
 				view.paint(pane);
 				globalThingViewList.add(view);
-				//Èvite d'ajouter ‡ chaque clic un Iot
+				//√©vite d'ajouter √† chaque clic un Iot
 				selectedIoTtool=-1;
 				}
 				else
@@ -610,7 +618,7 @@ public class VocaView {
 			Image ic = new Image(getClass().getResourceAsStream("../img/"+IoTClassNames.names[i]+".png"),30,30,true,true);
 			Button bt = new Button();
 			bt.setGraphic(new ImageView(ic));
-			Tooltip tt = new Tooltip(IoTClassNames.names[i]+"\n"+"Cliquer sur l'outil puis sur le plan pour crÈer un objet de ce type");
+			Tooltip tt = new Tooltip(IoTClassNames.names[i]+"\n"+"Cliquer sur l'outil puis sur le plan pour cr√©er un objet de ce type");
 			bt.setTooltip(tt);
 			gp1.add(bt,column,row);
 			
@@ -655,5 +663,166 @@ public class VocaView {
 		tp.getTabs().add(tab1);
 		root.setLeft(tp);
 	}
+	
+	private void buildUserInfo() {
+		// TODO Auto-generated method stub
+		//BackgroundImage bi = new BackgroundImage(FondEcran, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(100, 100, true, true, true, false));
+		//Background bg = new Background(bi);
+		
+//		 ButtonType loginButtonType = new ButtonType("Commencer");
+//		 Dialog<Void> dialog = new Dialog<>();
+//		 dialog.setHeaderText("Imaginez votre appartement du futur");
+//		 dialog.setGraphic(new ImageView(image));
+//		 dialog.setWidth(600);
+//		 dialog.setHeight(400);
+//		 dialog.getDialogPane().getButtonTypes().add(loginButtonType);
+//		 boolean disabled = false; // computed based on content of text fields, for example
+//		 dialog.getDialogPane().lookupButton(loginButtonType).setDisable(disabled);
+//		 //dialog.getDialogPane().setBackground(bg);
+//		 dialog.showAndWait();
+
+		Stage userInfo = new Stage(StageStyle.UTILITY);
+		userInfo.setTitle("Informations utilisateur");
+		
+		userInfo.setOnCloseRequest(windowEvent->{
+			windowEvent.consume();
+		});
+
+		//root.getChildren().add(welcome);
+		
+		
+		
+		Button userInfoButton = new Button("A vous de jouer !");
+		userInfoButton.setStyle("-fx-background-color: linear-gradient(#ff5400, #be1d00);\r\n" + 
+				"    -fx-background-radius: 30;\r\n" + 
+				"    -fx-border-radius: 30;\r\n" + 
+				"    -fx-background-insets: 0;\r\n" + 
+				"    -fx-text-fill: white;"+
+				"-fx-font-size: 24");
+		
+		userInfoButton.setOnAction(actionEvent->{
+			userInfo.hide();
+		});
+		
+		Label userInstruction = new Label("Merci de r√©pondre √† ces quelques questions :");
+		
+		Label userNameLabel = new Label("Quel est votre pseudo ?");
+		TextField userNameTextField = new TextField();
+		HBox userNameBox = new HBox(50, userNameLabel,userNameTextField);
+
+		Label userAgeLabel = new Label("Quel est votre √¢ge ?");
+		
+		Slider userAgeSlider = new Slider();
+		userAgeSlider.setMin(15);
+		userAgeSlider.setMax(80);
+		userAgeSlider.setValue(35);	         
+		userAgeSlider.setShowTickLabels(true);
+		userAgeSlider.setShowTickMarks(true);	         
+		userAgeSlider.setMajorTickUnit(5);
+		userAgeSlider.setMinorTickCount(4);
+		userAgeSlider.setSnapToTicks(true);
+		userAgeSlider.setBlockIncrement(1);
+		userAgeSlider.setPrefWidth(350);
+
+		HBox userAgeBox = new HBox(70, userAgeLabel, userAgeSlider);
+
+		Label userGenderLabel = new Label("Quel est votre genre ?");
+		
+		ToggleGroup userGenderGroup = new ToggleGroup();
+		ToggleButton male = new RadioButton("Masculin");
+		male.setToggleGroup(userGenderGroup);
+		ToggleButton female = new RadioButton("F√©minin");
+		female.setToggleGroup(userGenderGroup);
+		ToggleButton neutral = new RadioButton("Neutre");
+		neutral.setToggleGroup(userGenderGroup);
+		female.setSelected(true);
+		
+		HBox userGenderBox = new HBox(60, userGenderLabel, female, male, neutral);
+		
+		Label userZipcodeLabel = new Label("Quel est votre code postal ?");
+		TextField userZipcodeTextField = new TextField();
+		HBox userZipcodeBox = new HBox(25, userZipcodeLabel, userZipcodeTextField);
+		//TODO : controle de la valeur
+
+		Label userQuestions = new Label ("Que vous inspirent les objets connecteÃÅs ?");
+		String [] questions = {"Peur          ","Admiration", "InquieÃÅtude ", "Inter√™t       ", "Aversion    ", "Curiosit√©   "};
+		
+		int [] questionValues = {0,0,0,0,0};
+
+		VBox userQuestionBox = new VBox(20, userQuestions);
+		
+		for(int i=0; i<6; i++)
+		{
+			Slider userAnswerSlider = new Slider (-2,2,0);
+			userAnswerSlider.setShowTickLabels(true);
+			userAnswerSlider.setShowTickMarks(true);
+			userAnswerSlider.setMajorTickUnit(1);
+			userAnswerSlider.setMinorTickCount(0);
+			userAnswerSlider.setBlockIncrement(1);
+			userAnswerSlider.setPrefWidth(250);
+			userAnswerSlider.setSnapToTicks(true);
+
+			Label userAnswerValue = new Label("1");
+//			userAnswerSlider.valueProperty().addListener(new ChangeListener <Number>(){ 
+//		         @Override
+//		         public void changed(ObservableValue<? extends Number> observable, 
+//		               Number oldValue, Number newValue) {
+//		            userAnswerValue.setText(" : " + newValue);			
+//		         }
+//		      });
+		    
+			//userAnswerSlider.setBlockIncrement(1);
+			HBox userAnswerBox = new HBox(50, new Label (questions[i]), userAnswerSlider, userAnswerValue);
+			userQuestionBox.getChildren().add(userAnswerBox);
+		}
+		
+		
+		BorderPane userPane = new BorderPane();
+		VBox userBox = new VBox(10,userInstruction,userNameBox,userGenderBox,userAgeBox,userZipcodeBox,userQuestionBox);
+
+
+		
+		Image banniere = new Image(getClass().getResourceAsStream("../img/Banniere.png"));
+		ImageView banniereFond = new ImageView();
+		banniereFond.setImage(banniere);
+		
+//		BackgroundImage bi =new BackgroundImage(banniere, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(960, 600, true, true, true, false));
+//		Background bg = new Background(bi);
+//		topBox.setBackground(bg);
+		
+		userPane.setTop(new HBox(banniereFond));
+	    
+		//userPane.setTop(topBox);
+		
+		userPane.setCenter(userBox);
+		//userBox.setEffect(new DropShadow());	
+		
+		BorderPane.setAlignment(userInfoButton,Pos.BASELINE_CENTER);
+		userPane.setBottom(userInfoButton);
+		
+		userInfo.setScene(new Scene(userPane,960, 768));
+
+		
+//		wb.getStyleClass().add("round-red");
+//		wb.getStyleClass().add("welcome-button");
+//		userPane.setStyle("-fx-background-color: linear-gradient(#ff5400, #be1d00);\r\n" + 
+//				"    -fx-background-radius: 30;\r\n" + 
+//				"    -fx-border-radius: 30;\r\n" + 
+//				"    -fx-background-insets: 0;\r\n" + 
+//				"    -fx-text-fill: white;"+
+//				"-fx-font-size: 24");
+		
+//		userBox.setCenter(userInfoButton);
+//		userBox.setAlignment(userInfoButton,Pos.BOTTOM_RIGHT);
+//		userBox.setPadding(new Insets(20));
+		
+		userInfo.initModality(Modality.APPLICATION_MODAL);
+		userInfo.setResizable(false);
+		userInfo.centerOnScreen();
+		
+		userInfo.show();
+		
+	}
+	
 
 }
