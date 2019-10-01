@@ -683,26 +683,29 @@ public class VocaView {
 
 		Stage userInfo = new Stage(StageStyle.UTILITY);
 		userInfo.setTitle("Informations utilisateur");
+		BorderPane userPane = new BorderPane();
+		Scene scene = new Scene(userPane,960, 768);
+		userInfo.setScene(scene);
+		
+		scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		
 		userInfo.setOnCloseRequest(windowEvent->{
 			windowEvent.consume();
 		});
 
 		//root.getChildren().add(welcome);
+
 		
+//		userInfoButton.setStyle("-fx-background-color: linear-gradient(#ff5400, #be1d00);\r\n" + 
+//				"    -fx-background-radius: 30;\r\n" + 
+//				"    -fx-border-radius: 30;\r\n" + 
+//				"    -fx-background-insets: 0;\r\n" + 
+//				"    -fx-text-fill: white;"+
+//				"-fx-font-size: 24");
 		
-		
-		Button userInfoButton = new Button("A vous de jouer !");
-		userInfoButton.setStyle("-fx-background-color: linear-gradient(#ff5400, #be1d00);\r\n" + 
-				"    -fx-background-radius: 30;\r\n" + 
-				"    -fx-border-radius: 30;\r\n" + 
-				"    -fx-background-insets: 0;\r\n" + 
-				"    -fx-text-fill: white;"+
-				"-fx-font-size: 24");
-		
-		userInfoButton.setOnAction(actionEvent->{
-			userInfo.hide();
-		});
+//		userInfoButton.setOnAction(actionEvent->{
+//			userInfo.hide();
+//		});
 		
 		Label userInstruction = new Label("Merci de répondre à ces quelques questions :");
 		
@@ -723,8 +726,13 @@ public class VocaView {
 		userAgeSlider.setSnapToTicks(true);
 		userAgeSlider.setBlockIncrement(1);
 		userAgeSlider.setPrefWidth(350);
+		
+		Label userAgeValueLabel = new Label ("35");
+		userAgeSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+			userAgeValueLabel.setText(Integer.toString(newValue.intValue()));
+		});
 
-		HBox userAgeBox = new HBox(70, userAgeLabel, userAgeSlider);
+		HBox userAgeBox = new HBox(70, userAgeLabel, userAgeSlider, userAgeValueLabel);
 
 		Label userGenderLabel = new Label("Quel est votre genre ?");
 		
@@ -747,20 +755,47 @@ public class VocaView {
 		Label userQuestions = new Label ("Que vous inspirent les objets connectés ?");
 		String [] questions = {"Peur          ","Admiration", "Inquiétude ", "Interêt       ", "Aversion    ", "Curiosité   "};
 		
-		int [] questionValues = {0,0,0,0,0};
+		//int [] questionValues = {0,0,0,0,0};
 
 		VBox userQuestionBox = new VBox(20, userQuestions);
 		
+//		for(int i=0; i<6; i++)
+//		{
+//			Slider userAnswerSlider = new Slider (-2,2,0);
+//			userAnswerSlider.setShowTickLabels(true);
+//			userAnswerSlider.setShowTickMarks(true);
+//			userAnswerSlider.setMajorTickUnit(1);
+//			userAnswerSlider.setMinorTickCount(0);
+//			userAnswerSlider.setBlockIncrement(1);
+//			userAnswerSlider.setPrefWidth(250);
+//			userAnswerSlider.setSnapToTicks(true);
+//
+//			Label userAnswerValue = new Label("1");
+////			userAnswerSlider.valueProperty().addListener(new ChangeListener <Number>(){ 
+////		         @Override
+////		         public void changed(ObservableValue<? extends Number> observable, 
+////		               Number oldValue, Number newValue) {
+////		            userAnswerValue.setText(" : " + newValue);			
+////		         }
+////		      });
+//		    
+//			//userAnswerSlider.setBlockIncrement(1);
+//			HBox userAnswerBox = new HBox(50, new Label (questions[i]), userAnswerSlider, userAnswerValue);
+//			userQuestionBox.getChildren().add(userAnswerBox);
+//		}
+//		
+		
+		Slider [] userAnswerSliders = new Slider[6];
 		for(int i=0; i<6; i++)
 		{
-			Slider userAnswerSlider = new Slider (-2,2,0);
-			userAnswerSlider.setShowTickLabels(true);
-			userAnswerSlider.setShowTickMarks(true);
-			userAnswerSlider.setMajorTickUnit(1);
-			userAnswerSlider.setMinorTickCount(0);
-			userAnswerSlider.setBlockIncrement(1);
-			userAnswerSlider.setPrefWidth(250);
-			userAnswerSlider.setSnapToTicks(true);
+			userAnswerSliders[i] = new Slider (1,5,0);
+			userAnswerSliders[i].setShowTickLabels(true);
+			userAnswerSliders[i].setShowTickMarks(true);
+			userAnswerSliders[i].setMajorTickUnit(1);
+			userAnswerSliders[i].setMinorTickCount(0);
+			userAnswerSliders[i].setBlockIncrement(1);
+			userAnswerSliders[i].setPrefWidth(250);
+			userAnswerSliders[i].setSnapToTicks(true);
 
 			Label userAnswerValue = new Label("1");
 //			userAnswerSlider.valueProperty().addListener(new ChangeListener <Number>(){ 
@@ -770,14 +805,40 @@ public class VocaView {
 //		            userAnswerValue.setText(" : " + newValue);			
 //		         }
 //		      });
-		    
+			
+			userAnswerSliders[i].valueProperty().addListener((observable, oldValue, newValue) -> {
+				userAnswerValue.setText(Integer.toString(newValue.intValue()));
+			});
+			
 			//userAnswerSlider.setBlockIncrement(1);
-			HBox userAnswerBox = new HBox(50, new Label (questions[i]), userAnswerSlider, userAnswerValue);
+			HBox userAnswerBox = new HBox(50, new Label (questions[i]), userAnswerSliders[i], userAnswerValue);
 			userQuestionBox.getChildren().add(userAnswerBox);
+	//		questionValues [i] = ;
 		}
 		
+		Button userInfoButton = new Button("A vous de jouer !");
+		userInfoButton.getStyleClass().add("round-red");
 		
-		BorderPane userPane = new BorderPane();
+		userInfoButton.setOnAction(actionEvent->{
+	        String name = userNameTextField.getText();
+	        int age = (int) userAgeSlider.getValue();
+	        ToggleButton selectedGender = (ToggleButton) userGenderGroup.getSelectedToggle();
+	        String gender =  selectedGender.getText();
+	        String zipcode = userZipcodeTextField.getText();
+	        
+	        //System.out.print(name + " - " + gender + " - " + age + " - "  + zipcode);
+
+	        int userAnswers[] = new int [6];
+	        for(int i =0; i<6; i++)
+	        {
+	        	userAnswers[i] = userAnswerSliders[i].valueProperty().intValue();
+	        	//System.out.print(" - " + userAnswers[i]);
+	        }
+	        currentHuteur.setHuteur(name,gender,age,zipcode,userAnswers);
+	        userInfo.hide();
+		});
+		
+		
 		VBox userBox = new VBox(10,userInstruction,userNameBox,userGenderBox,userAgeBox,userZipcodeBox,userQuestionBox);
 
 
@@ -797,10 +858,10 @@ public class VocaView {
 		userPane.setCenter(userBox);
 		//userBox.setEffect(new DropShadow());	
 		
-		BorderPane.setAlignment(userInfoButton,Pos.BASELINE_CENTER);
+		BorderPane.setAlignment(userInfoButton,Pos.BASELINE_RIGHT);
 		userPane.setBottom(userInfoButton);
 		
-		userInfo.setScene(new Scene(userPane,960, 768));
+		
 
 		
 //		wb.getStyleClass().add("round-red");

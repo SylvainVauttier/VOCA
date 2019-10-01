@@ -1,11 +1,14 @@
 /* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
 
 .round-red {
-    -fx-background-color: linear-gradient(#ff5400, #be1d00);
-    -fx-background-radius: 30;
-    -fx-border-radius: 30;
-    -fx-background-insets: 0;
+    /* -fx-background-color: linear-gradient(#ff5400, #be1d00); */
+    -fx-background-color: linear-gradient(#A82763,#B82763);
+/*     -fx-background-radius: 30; */
+/*     -fx-border-radius: 30; */
+/*     -fx-background-insets: 0; */
     -fx-text-fill: white;
+    -fx-font-size: 24;
+    -fx-padding: 10 20 10 20;
 }
 
 .welcome-button{

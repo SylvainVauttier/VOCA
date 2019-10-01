@@ -74,5 +74,113 @@ public class Huteur {
 	{
 		getScenarios().remove(s);
 	}
+	
+private String gender;
+	
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+	
+	private int age;
+	
+
+	public int getAge() {
+		return age;
+	}
+
+	public void setAge(int age) {
+		this.age = age;
+	}
+
+	private String zipcode;
+	
+
+	public String getZipcode() {
+		return zipcode;
+	}
+
+	public void setZipcode(String zipcode) {
+		this.zipcode = zipcode;
+	}
+
+	private int fear;
+	
+	public int getFear() {
+		return fear;
+	}
+
+	public void setFear(int fear) {
+		this.fear = fear;
+	}
+
+	private int admiration;
+	
+	public int getAdmiration() {
+		return admiration;
+	}
+
+	public void setAdmiration(int admiration) {
+		this.admiration = admiration;
+	}
+	
+	private int anxiety;
+
+	public int getAnxiety() {
+		return anxiety;
+	}
+
+	public void setAnxiety(int anxiety) {
+		this.anxiety = anxiety;
+	}
+
+	private int interest;
+
+	public int getInterest() {
+		return interest;
+	}
+
+	public void setInterest(int interest) {
+		this.interest = interest;
+	}
+
+	private int aversion;
+	
+	public int getAversion() {
+		return aversion;
+	}
+
+	public void setAversion(int aversion) {
+		this.aversion = aversion;
+	}
+
+	private int curiosity;
+	
+
+	public int getCuriosity() {
+		return curiosity;
+	}
+
+	public void setCuriosity(int curiosity) {
+		this.curiosity = curiosity;
+	}
+	
+	public void setHuteur (String nickname, String gender, int age, String zip, int[] answers)
+	{
+		setName(nickname);
+		setGender(gender);
+		setAge(age);
+		setZipcode(zip);
+		setFear(answers[0]);
+		setAdmiration(answers[1]);
+		setAnxiety(answers[2]);
+		setInterest(answers[3]);
+		setAversion(answers[4]);
+		setCuriosity(answers[5]);
+	}
 
 }
