@@ -171,12 +171,15 @@ public class VocaView {
 		
 		
 		welcome = new Stage(StageStyle.UTILITY);
+		BorderPane wp = new BorderPane();
+		Scene scene = new Scene(wp,1200,680);
+		scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		
 		BackgroundImage bi = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(100, 100, true, true, true, false));
 		Background bg = new Background(bi);
-		BorderPane wp = new BorderPane();
 		
-		welcome.setScene(new Scene(wp,1200,680));
+		
+		welcome.setScene(scene);
 		wp.setBackground(bg);
 		wp.setEffect(new DropShadow());
 		
@@ -186,17 +189,17 @@ public class VocaView {
 //			currentHuteur = controler.creerHuteur();
 			startGame();
 		});
-		//ca ne marche pas et je ne sais pas pourquoi...
-		// à vérifier si cela ne dépend pas du stage ou de la scene
-//		wb.getStyleClass().add("round-red");
-//		wb.getStyleClass().add("welcome-button");
-		wb.setStyle("-fx-background-color: linear-gradient(#ff5400, #be1d00);\r\n" + 
-				"    -fx-background-radius: 30;\r\n" + 
-				"    -fx-border-radius: 30;\r\n" + 
-				"    -fx-background-insets: 0;\r\n" + 
-				"    -fx-text-fill: white;"+
-				"-fx-font-size: 24");
 		
+
+//		wb.setStyle("-fx-background-color: linear-gradient(#ff5400, #be1d00);\r\n" + 
+//				"    -fx-background-radius: 30;\r\n" + 
+//				"    -fx-border-radius: 30;\r\n" + 
+//				"    -fx-background-insets: 0;\r\n" + 
+//				"    -fx-text-fill: white;"+
+//				"-fx-font-size: 24");
+		
+		wb.getStyleClass().add("round-red");
+		//wb.getStyleClass().add("welcome-button");
 		wp.setCenter(wb);
 		wp.setAlignment(wb,Pos.BOTTOM_RIGHT);
 		wp.setPadding(new Insets(20));
@@ -665,21 +668,6 @@ public class VocaView {
 	}
 	
 	private void buildUserInfo() {
-		// TODO Auto-generated method stub
-		//BackgroundImage bi = new BackgroundImage(FondEcran, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(100, 100, true, true, true, false));
-		//Background bg = new Background(bi);
-		
-//		 ButtonType loginButtonType = new ButtonType("Commencer");
-//		 Dialog<Void> dialog = new Dialog<>();
-//		 dialog.setHeaderText("Imaginez votre appartement du futur");
-//		 dialog.setGraphic(new ImageView(image));
-//		 dialog.setWidth(600);
-//		 dialog.setHeight(400);
-//		 dialog.getDialogPane().getButtonTypes().add(loginButtonType);
-//		 boolean disabled = false; // computed based on content of text fields, for example
-//		 dialog.getDialogPane().lookupButton(loginButtonType).setDisable(disabled);
-//		 //dialog.getDialogPane().setBackground(bg);
-//		 dialog.showAndWait();
 
 		Stage userInfo = new Stage(StageStyle.UTILITY);
 		userInfo.setTitle("Informations utilisateur");
@@ -692,20 +680,6 @@ public class VocaView {
 		userInfo.setOnCloseRequest(windowEvent->{
 			windowEvent.consume();
 		});
-
-		//root.getChildren().add(welcome);
-
-		
-//		userInfoButton.setStyle("-fx-background-color: linear-gradient(#ff5400, #be1d00);\r\n" + 
-//				"    -fx-background-radius: 30;\r\n" + 
-//				"    -fx-border-radius: 30;\r\n" + 
-//				"    -fx-background-insets: 0;\r\n" + 
-//				"    -fx-text-fill: white;"+
-//				"-fx-font-size: 24");
-		
-//		userInfoButton.setOnAction(actionEvent->{
-//			userInfo.hide();
-//		});
 		
 		Label userInstruction = new Label("Merci de répondre à ces quelques questions :");
 		
@@ -754,36 +728,8 @@ public class VocaView {
 
 		Label userQuestions = new Label ("Que vous inspirent les objets connectés ?");
 		String [] questions = {"Peur          ","Admiration", "Inquiétude ", "Interêt       ", "Aversion    ", "Curiosité   "};
-		
-		//int [] questionValues = {0,0,0,0,0};
 
 		VBox userQuestionBox = new VBox(20, userQuestions);
-		
-//		for(int i=0; i<6; i++)
-//		{
-//			Slider userAnswerSlider = new Slider (-2,2,0);
-//			userAnswerSlider.setShowTickLabels(true);
-//			userAnswerSlider.setShowTickMarks(true);
-//			userAnswerSlider.setMajorTickUnit(1);
-//			userAnswerSlider.setMinorTickCount(0);
-//			userAnswerSlider.setBlockIncrement(1);
-//			userAnswerSlider.setPrefWidth(250);
-//			userAnswerSlider.setSnapToTicks(true);
-//
-//			Label userAnswerValue = new Label("1");
-////			userAnswerSlider.valueProperty().addListener(new ChangeListener <Number>(){ 
-////		         @Override
-////		         public void changed(ObservableValue<? extends Number> observable, 
-////		               Number oldValue, Number newValue) {
-////		            userAnswerValue.setText(" : " + newValue);			
-////		         }
-////		      });
-//		    
-//			//userAnswerSlider.setBlockIncrement(1);
-//			HBox userAnswerBox = new HBox(50, new Label (questions[i]), userAnswerSlider, userAnswerValue);
-//			userQuestionBox.getChildren().add(userAnswerBox);
-//		}
-//		
 		
 		Slider [] userAnswerSliders = new Slider[6];
 		for(int i=0; i<6; i++)
@@ -798,26 +744,21 @@ public class VocaView {
 			userAnswerSliders[i].setSnapToTicks(true);
 
 			Label userAnswerValue = new Label("1");
-//			userAnswerSlider.valueProperty().addListener(new ChangeListener <Number>(){ 
-//		         @Override
-//		         public void changed(ObservableValue<? extends Number> observable, 
-//		               Number oldValue, Number newValue) {
-//		            userAnswerValue.setText(" : " + newValue);			
-//		         }
-//		      });
 			
 			userAnswerSliders[i].valueProperty().addListener((observable, oldValue, newValue) -> {
 				userAnswerValue.setText(Integer.toString(newValue.intValue()));
 			});
 			
-			//userAnswerSlider.setBlockIncrement(1);
 			HBox userAnswerBox = new HBox(50, new Label (questions[i]), userAnswerSliders[i], userAnswerValue);
 			userQuestionBox.getChildren().add(userAnswerBox);
-	//		questionValues [i] = ;
 		}
 		
 		Button userInfoButton = new Button("A vous de jouer !");
 		userInfoButton.getStyleClass().add("round-red");
+		userPane.setAlignment(userInfoButton,Pos.TOP_RIGHT);
+		//BorderPane.setAlignment(userInfoButton,Pos.BASELINE_RIGHT);
+		//userInfoButton.setPadding(new Insets(20));
+		userPane.setBottom(userInfoButton);
 		
 		userInfoButton.setOnAction(actionEvent->{
 	        String name = userNameTextField.getText();
@@ -826,8 +767,6 @@ public class VocaView {
 	        String gender =  selectedGender.getText();
 	        String zipcode = userZipcodeTextField.getText();
 	        
-	        //System.out.print(name + " - " + gender + " - " + age + " - "  + zipcode);
-
 	        int userAnswers[] = new int [6];
 	        for(int i =0; i<6; i++)
 	        {
@@ -858,8 +797,7 @@ public class VocaView {
 		userPane.setCenter(userBox);
 		//userBox.setEffect(new DropShadow());	
 		
-		BorderPane.setAlignment(userInfoButton,Pos.BASELINE_RIGHT);
-		userPane.setBottom(userInfoButton);
+		
 		
 		
 

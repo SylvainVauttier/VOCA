@@ -8,7 +8,7 @@
 /*     -fx-background-insets: 0; */
     -fx-text-fill: white;
     -fx-font-size: 24;
-    -fx-padding: 10 20 10 20;
+/*     -fx-padding: 10 20 10 20; */
 }
 
 .welcome-button{

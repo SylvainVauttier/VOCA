@@ -108,11 +108,14 @@ public class ThingView extends Rectangle {
 
 	public void paint(Pane p)
 	{
-		ColorAdjust ca = new ColorAdjust();
-		if (active) ca.setBrightness(1);
-		else ca.setBrightness(0.5);
-		ca.setInput(new DropShadow());
-		this.setEffect(ca);
+		//ColorAdjust ca = new ColorAdjust();
+//		if (active) ca.setBrightness(1);
+//		else ca.setBrightness(0.5);
+//		ca.setInput(new DropShadow());
+//		this.setEffect(ca);
+		if (active) this.setStroke(Color.MEDIUMVIOLETRED);
+		else this.setStroke(Color.TRANSPARENT);
+		//this.setEffect(new DropShadow());
 		p.getChildren().addAll(this,this.label);
 	}
 	
@@ -146,20 +149,24 @@ public class ThingView extends Rectangle {
 	{
 		active=true;
 		
-		ColorAdjust ca = new ColorAdjust();
-		ca.setBrightness(0);
-		ca.setInput(new DropShadow());
-		this.setEffect(ca);
+//		ColorAdjust ca = new ColorAdjust();
+//		ca.setBrightness(0);
+//		ca.setInput(new DropShadow());
+//		this.setEffect(ca);
+		this.setStroke(Color.MEDIUMVIOLETRED);
+		//this.setEffect(new DropShadow());
 	}
 	
 	public void deactive()
 	{
 		active=false;
 		
-		ColorAdjust ca = new ColorAdjust();
-		ca.setBrightness(0.5);
-		ca.setInput(new DropShadow());
-		this.setEffect(ca);
+//		ColorAdjust ca = new ColorAdjust();
+//		ca.setBrightness(0.5);
+//		ca.setInput(new DropShadow());
+//		this.setEffect(ca);
+		
+		this.setStroke(Color.TRANSPARENT);
 	}
 
 
