@@ -56,7 +56,12 @@ import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -64,6 +69,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Translate;
 import javafx.stage.Modality;
@@ -110,7 +118,10 @@ public class VocaView {
 
 	private ThingEditor thingEditor;
 	
-	private Stage welcome;
+	private Stage welcome=null;
+	private Stage consigne=null;
+	private Stage alerteSuppression=null;
+	private Stage alerteSortie=null;
 	
 	//TabPane tp = new TabPane();
 	
@@ -164,9 +175,151 @@ public class VocaView {
 		}
 		
 	}
+	
+	private void buildAndShowSortie()
+	{
+		if (alerteSortie==null)
+		{
+				alerteSortie = new Stage(StageStyle.UTILITY);
+				alerteSortie.initModality(Modality.APPLICATION_MODAL);
+				alerteSortie.setResizable(false);
+				alerteSortie.centerOnScreen();
+				
+				BorderPane wp = new BorderPane();
+				Scene scene = new Scene(wp,600,340);
+				scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+				alerteSortie.setScene(scene);
+				
+				Image image = new Image(getClass().getResourceAsStream("../img/AlerteSortie.png"));
+				BackgroundImage bi = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(100, 100, true, true, true, false));
+				Background bg = new Background(bi);
+				wp.setBackground(bg);
+				wp.setEffect(new DropShadow());
+				
+				HBox buttons = new HBox();
+				buttons.setAlignment(Pos.BOTTOM_RIGHT);
+				buttons.setPadding(new Insets(10,10,10,10));
+				buttons.setSpacing(10);
+				
+				Button cb = new Button("Ciao !");
+				cb.getStyleClass().add("round-red");
+				cb.setPadding(new Insets(20));
+				
+				Button rb = new Button("Je reste encore un peu...");
+				rb.getStyleClass().add("round-red");
+				rb.setPadding(new Insets(20));
+				
+				buttons.getChildren().addAll(rb,cb);
+				wp.setAlignment(buttons,Pos.BOTTOM_CENTER);
+				
+				wp.setBottom(buttons);
+				
+				cb.setOnAction(actionEvent->{
+					alerteSortie.hide();
+					reinitGame();
+				});
+				
+				rb.setOnAction(actionEvent->{
+					alerteSortie.hide();
+				});
+				
+				consigne.setOnCloseRequest(windowEvent->{
+					alerteSortie.hide();
+				});
+		}
+		
+		alerteSortie.show();
+	}
+	
+	private void buildAndShowSuppression()
+	{
+		if (alerteSuppression==null)
+		{
+			alerteSuppression = new Stage(StageStyle.UTILITY);
+			alerteSuppression.initModality(Modality.APPLICATION_MODAL);
+			alerteSuppression.setResizable(false);
+			alerteSuppression.centerOnScreen();
+			
+			BorderPane wp = new BorderPane();
+			Scene scene = new Scene(wp,600,340);
+			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			alerteSuppression.setScene(scene);
+			
+			Image image = new Image(getClass().getResourceAsStream("../img/AlerteSuppression.png"));
+			BackgroundImage bi = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(100, 100, true, true, true, false));
+			Background bg = new Background(bi);
+			wp.setBackground(bg);
+			wp.setEffect(new DropShadow());
+			
+			Button wb = new Button("Ok");
+			wb.getStyleClass().add("round-red");
+			wp.setCenter(wb);
+			wp.setAlignment(wb,Pos.BOTTOM_RIGHT);
+			wp.setPadding(new Insets(20));
+			
+			wb.setOnAction(actionEvent->{
+				alerteSuppression.hide();
+			});
+			
+			consigne.setOnCloseRequest(windowEvent->{
+				alerteSuppression.hide();
+			});
+		}
+			
+			alerteSuppression.show();
+	}
+	
+	private void buildAndShowConsigneWindow()
+	{
+		if (consigne==null)
+		{
+		consigne = new Stage(StageStyle.UTILITY);
+		consigne.initModality(Modality.APPLICATION_MODAL);
+		consigne.setResizable(false);
+		consigne.centerOnScreen();
+		
+		
+		BorderPane wp = new BorderPane();
+		Scene scene = new Scene(wp,1200,680);
+		scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		consigne.setScene(scene);
+		
+		Image image = new Image(getClass().getResourceAsStream("../img/Consignes2.png"));
+		BackgroundImage bi = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(100, 100, true, true, true, false));
+		Background bg = new Background(bi);
+		wp.setBackground(bg);
+		wp.setEffect(new DropShadow());
+		
+		
+		Button wb = new Button("Ok");
+		wb.getStyleClass().add("round-red");
+		wp.setCenter(wb);
+		wp.setAlignment(wb,Pos.BOTTOM_RIGHT);
+		wp.setPadding(new Insets(20));
+		
+		
+		wb.setOnAction(actionEvent->{
+			enter();
+		});
+		
+		consigne.setOnCloseRequest(windowEvent->{
+			enter();
+		});
+		}
+		
+		consigne.show();
+		
+	}
+
+	private void enter() {
+		// TODO Auto-generated method stub
+		consigne.hide();
+	}
 
 	private void buildAndShowWelcome(Stage primaryStage) {
 		// TODO Auto-generated method stub
+		if (welcome==null)
+		{
 		Image image = new Image(getClass().getResourceAsStream("../img/Consignes.png"));
 		
 		
@@ -183,7 +336,7 @@ public class VocaView {
 		wp.setBackground(bg);
 		wp.setEffect(new DropShadow());
 		
-		Button wb = new Button("Commencer");
+		Button wb = new Button("Entrer");
 		wb.setOnAction(actionEvent->{
 //			welcome.hide();
 //			currentHuteur = controler.creerHuteur();
@@ -216,7 +369,7 @@ public class VocaView {
 //			currentHuteur = controler.creerHuteur();
 			startGame();
 		});
-		
+		}
 		welcome.show();
 		
 	}
@@ -250,8 +403,9 @@ public class VocaView {
 			}
 			else
 			{
-				Alert al = new Alert (Alert.AlertType.INFORMATION,"Objet utilisé dans un scénario");
-				al.showAndWait();
+				//Alert al = new Alert (Alert.AlertType.INFORMATION,"Objet utilisé dans un scénario");
+				//al.showAndWait();
+				buildAndShowSuppression();
 			}
 		});
 		
@@ -287,30 +441,34 @@ public class VocaView {
 		// TODO Auto-generated method stub
 		GridPane ctrl = new GridPane();
 		
-		Button editer = new Button("Editer");
+		Button aide = new Button("Aide");
+		aide.setMaxWidth(Double.MAX_VALUE);
+		aide.getStyleClass().add("round-red");
+		Button editer = new Button("Editer scénario");
 		editer.setMaxWidth(Double.MAX_VALUE);
 		editer.getStyleClass().add("round-red");
-		Button supprimer = new Button("Supprimer");
+		Button supprimer = new Button("Supprimer scénario");
 		supprimer.setMaxWidth(Double.MAX_VALUE);
 		supprimer.getStyleClass().add("round-red");
-		Button nouveau = new Button("Nouveau");
+		Button nouveau = new Button("Créer scénario");
 		nouveau.setMaxWidth(Double.MAX_VALUE);
 		nouveau.getStyleClass().add("round-red");
-		Button quitter = new Button("Quitter");
+		Button quitter = new Button("Sortir");
 		quitter.setMaxWidth(Double.MAX_VALUE);
 		quitter.getStyleClass().add("round-red");
 		
 		
 		Label ls = new Label("Scénarios");
 		scenarioListView = new ListView<String>();
-		scenarioListView.setMaxWidth(200);
+		scenarioListView.setMaxWidth(300);
 		
 		Label ld = new Label("Description");
 		scenarioDescriptor = new TextArea();
-		scenarioDescriptor.setMaxWidth(200);
+		scenarioDescriptor.setMaxWidth(300);
 		
-		ctrl.addColumn(0,nouveau,editer,supprimer,ls,scenarioListView,ld,scenarioDescriptor,quitter);
-		
+		//ctrl.addColumn(0,nouveau,editer,supprimer,aide,ls,scenarioListView,ld,scenarioDescriptor,quitter);
+		ctrl.addColumn(0,nouveau,editer,supprimer,aide,scenarioListView,scenarioDescriptor,quitter);
+
 		root.setRight(ctrl);
 		
 		scenarioListView.setOnMouseClicked(mouseEvent->{
@@ -372,13 +530,16 @@ public class VocaView {
 		});
 		
 		quitter.setOnAction(actionEvent->{
-			Alert al = new Alert (Alert.AlertType.CONFIRMATION,"Attention ! Toute sortie est définitive !!!");
-			Optional<ButtonType> result=al.showAndWait();
-			if (result.isPresent() && result.get() == ButtonType.OK)
-			reinitGame();
+//			Alert al = new Alert (Alert.AlertType.CONFIRMATION,"Attention ! Toute sortie est définitive !!!");
+//			Optional<ButtonType> result=al.showAndWait();
+//			if (result.isPresent() && result.get() == ButtonType.OK)
+//			reinitGame();
+			buildAndShowSortie();
 		});
 		
-		
+		aide.setOnAction(actionEvent->{
+			consigne.show();
+		});
 		
 	}
 
@@ -674,20 +835,39 @@ public class VocaView {
 		BorderPane userPane = new BorderPane();
 		Scene scene = new Scene(userPane,960, 768);
 		userInfo.setScene(scene);
+		//userPane.setPadding(new Insets(10,10,10,10));
 		
 		scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		//userPane.setB(Color.PALETURQUOISE);
+		
+		Font font = Font.font("Calibri",FontWeight.BOLD,FontPosture.REGULAR,24);
 		
 		userInfo.setOnCloseRequest(windowEvent->{
 			windowEvent.consume();
 		});
 		
+		GridPane grid = new GridPane();
+		
 		Label userInstruction = new Label("Merci de répondre à ces quelques questions :");
+		userInstruction.setFont(font);
+		
+		grid.add(userInstruction,0,0,2,1);
 		
 		Label userNameLabel = new Label("Quel est votre pseudo ?");
+		userNameLabel.setFont(font);
 		TextField userNameTextField = new TextField();
-		HBox userNameBox = new HBox(50, userNameLabel,userNameTextField);
+		userNameTextField.setFont(font);
+		//HBox userNameBox = new HBox(50, userNameLabel,userNameTextField);
+		grid.add(userNameLabel, 0, 1);
+		grid.add(userNameTextField,1,1);
+		
+		grid.setHgap(10);
+		grid.setVgap(10);
+		grid.setPadding(new Insets(10,10,10,50));
 
 		Label userAgeLabel = new Label("Quel est votre âge ?");
+		userAgeLabel.setFont(font);
 		
 		Slider userAgeSlider = new Slider();
 		userAgeSlider.setMin(15);
@@ -702,34 +882,58 @@ public class VocaView {
 		userAgeSlider.setPrefWidth(350);
 		
 		Label userAgeValueLabel = new Label ("35");
+		userAgeValueLabel.setBorder(new Border(new BorderStroke(Color.BLACK,BorderStrokeStyle.SOLID,CornerRadii.EMPTY,BorderWidths.FULL)));
+		
+		userAgeValueLabel.setFont(font);
+		
+		grid.add(userAgeLabel, 0, 2);
+		grid.add(userAgeSlider, 1, 2);
+		grid.add(userAgeValueLabel, 2, 2);
+		
 		userAgeSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
 			userAgeValueLabel.setText(Integer.toString(newValue.intValue()));
 		});
 
-		HBox userAgeBox = new HBox(70, userAgeLabel, userAgeSlider, userAgeValueLabel);
+		//HBox userAgeBox = new HBox(70, userAgeLabel, userAgeSlider, userAgeValueLabel);
 
 		Label userGenderLabel = new Label("Quel est votre genre ?");
+		userGenderLabel.setFont(font);
 		
 		ToggleGroup userGenderGroup = new ToggleGroup();
 		ToggleButton male = new RadioButton("Masculin");
+		male.setFont(font);
 		male.setToggleGroup(userGenderGroup);
 		ToggleButton female = new RadioButton("Féminin");
+		female.setFont(font);
 		female.setToggleGroup(userGenderGroup);
 		ToggleButton neutral = new RadioButton("Neutre");
+		neutral.setFont(font);
 		neutral.setToggleGroup(userGenderGroup);
 		female.setSelected(true);
 		
-		HBox userGenderBox = new HBox(60, userGenderLabel, female, male, neutral);
+		HBox toggleButtons = new HBox(60,female, male, neutral);
+		
+		grid.add(userGenderLabel, 0, 3);
+		grid.add(toggleButtons, 1, 3);
+		
+		//HBox userGenderBox = new HBox(60, userGenderLabel, female, male, neutral);
 		
 		Label userZipcodeLabel = new Label("Quel est votre code postal ?");
+		userZipcodeLabel.setFont(font);
 		TextField userZipcodeTextField = new TextField();
-		HBox userZipcodeBox = new HBox(25, userZipcodeLabel, userZipcodeTextField);
+		userZipcodeTextField.setFont(font);
+		//HBox userZipcodeBox = new HBox(25, userZipcodeLabel, userZipcodeTextField);
+		grid.add(userZipcodeLabel, 0, 4);
+		grid.add(userZipcodeTextField, 1, 4);
 		//TODO : controle de la valeur
 
 		Label userQuestions = new Label ("Que vous inspirent les objets connectés ?");
+		userQuestions.setFont(font);
+		grid.add(userQuestions,0,5,2,1);
+		
 		String [] questions = {"Peur          ","Admiration", "Inquiétude ", "Interêt       ", "Aversion    ", "Curiosité   "};
 
-		VBox userQuestionBox = new VBox(20, userQuestions);
+		//VBox userQuestionBox = new VBox(20, userQuestions);
 		
 		Slider [] userAnswerSliders = new Slider[6];
 		for(int i=0; i<6; i++)
@@ -744,13 +948,20 @@ public class VocaView {
 			userAnswerSliders[i].setSnapToTicks(true);
 
 			Label userAnswerValue = new Label("1");
+			userAnswerValue.setFont(font);
 			
 			userAnswerSliders[i].valueProperty().addListener((observable, oldValue, newValue) -> {
 				userAnswerValue.setText(Integer.toString(newValue.intValue()));
 			});
 			
-			HBox userAnswerBox = new HBox(50, new Label (questions[i]), userAnswerSliders[i], userAnswerValue);
-			userQuestionBox.getChildren().add(userAnswerBox);
+			Label label = new Label (questions[i]);
+			label.setFont(font);
+			
+//			HBox userAnswerBox = new HBox(50, label, userAnswerSliders[i], userAnswerValue);
+//			userQuestionBox.getChildren().add(userAnswerBox);
+			grid.add(label, 0, i+6);
+			grid.add(userAnswerSliders[i], 1, i+6);
+			grid.add(userAnswerValue,2,i+6);
 		}
 		
 		Button userInfoButton = new Button("A vous de jouer !");
@@ -775,10 +986,11 @@ public class VocaView {
 	        }
 	        currentHuteur.setHuteur(name,gender,age,zipcode,userAnswers);
 	        userInfo.hide();
+	        buildAndShowConsigneWindow();
 		});
 		
 		
-		VBox userBox = new VBox(10,userInstruction,userNameBox,userGenderBox,userAgeBox,userZipcodeBox,userQuestionBox);
+		//VBox userBox = new VBox(10,userInstruction,userNameBox,userGenderBox,userAgeBox,userZipcodeBox,userQuestionBox);
 
 
 		
@@ -794,7 +1006,7 @@ public class VocaView {
 	    
 		//userPane.setTop(topBox);
 		
-		userPane.setCenter(userBox);
+		userPane.setCenter(grid);
 		//userBox.setEffect(new DropShadow());	
 		
 		
