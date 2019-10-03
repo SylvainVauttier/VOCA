@@ -584,33 +584,49 @@ public class VocaView {
 		grid.setVgap(5);
         grid.setHgap(10);
         
+        Scene scene = new Scene(grid);
+        scenarioEditor.setScene(scene);
+        
+        scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+        Font smallFont = Font.font("Calibri",FontWeight.BOLD,FontPosture.REGULAR,16);
+        
         Label name = new Label("Nom");
+        name.setFont(smallFont);
         GridPane.setConstraints(name, 0, 0);
         grid.getChildren().add(name);
         
         scenarioEditor.nameTF = new TextField();
+        scenarioEditor.nameTF.setFont(smallFont);
         GridPane.setConstraints(scenarioEditor.nameTF, 1, 0);
         grid.getChildren().add(scenarioEditor.nameTF);
         
         Label desc = new Label("Description");
+        desc.setFont(smallFont);
         GridPane.setConstraints(desc, 0, 1);
         grid.getChildren().add(desc);
         
         scenarioEditor.descTA = new TextArea();
         scenarioEditor.descTA.setWrapText(true);
+        scenarioEditor.descTA.setFont(smallFont);
         GridPane.setConstraints(scenarioEditor.descTA, 1, 2);
         grid.getChildren().add(scenarioEditor.descTA);
         
+        HBox buttons = new HBox();
+        buttons.setAlignment(Pos.CENTER_RIGHT);
+        buttons.setSpacing(20);
+        
         Button ok = new Button("Valider");
-        GridPane.setConstraints(ok, 0, 3);
-        grid.getChildren().add(ok);
+        ok.getStyleClass().add("round-red");
+//        GridPane.setConstraints(ok, 0, 3);
+//        grid.getChildren().add(ok);
         
         Button ko = new Button("Annuler");
-        GridPane.setConstraints(ko, 1, 3);
-        grid.getChildren().add(ko);
+        ko.getStyleClass().add("round-red");
+//        GridPane.setConstraints(ko, 1, 3);
+//        grid.getChildren().add(ko);
         
-        Scene scene = new Scene(grid);
-        scenarioEditor.setScene(scene);
+        buttons.getChildren().addAll(ok,ko);
+        grid.add(buttons, 1, 3);
 
         ok.setOnAction(eventAction->{
         	scenarioEditor.hide();
@@ -829,7 +845,6 @@ public class VocaView {
 	}
 	
 	private void buildUserInfo() {
-
 		Stage userInfo = new Stage(StageStyle.UTILITY);
 		userInfo.setTitle("Informations utilisateur");
 		BorderPane userPane = new BorderPane();
@@ -841,8 +856,9 @@ public class VocaView {
 		
 		//userPane.setB(Color.PALETURQUOISE);
 		
-		Font font = Font.font("Calibri",FontWeight.BOLD,FontPosture.REGULAR,24);
-		
+		Font bigFont = Font.font("Calibri",FontWeight.BOLD,FontPosture.REGULAR,24);
+		Font smallFont = Font.font("Calibri",FontWeight.BOLD,FontPosture.REGULAR,16);
+
 		userInfo.setOnCloseRequest(windowEvent->{
 			windowEvent.consume();
 		});
@@ -850,24 +866,24 @@ public class VocaView {
 		GridPane grid = new GridPane();
 		
 		Label userInstruction = new Label("Merci de répondre à ces quelques questions :");
-		userInstruction.setFont(font);
+		userInstruction.setFont(bigFont);
 		
 		grid.add(userInstruction,0,0,2,1);
 		
 		Label userNameLabel = new Label("Quel est votre pseudo ?");
-		userNameLabel.setFont(font);
+		userNameLabel.setFont(bigFont);
 		TextField userNameTextField = new TextField();
-		userNameTextField.setFont(font);
+		userNameTextField.setFont(bigFont);
 		//HBox userNameBox = new HBox(50, userNameLabel,userNameTextField);
 		grid.add(userNameLabel, 0, 1);
 		grid.add(userNameTextField,1,1);
 		
-		grid.setHgap(10);
+		grid.setHgap(30);
 		grid.setVgap(10);
-		grid.setPadding(new Insets(10,10,10,50));
+		grid.setPadding(new Insets(30,10,10,70));
 
 		Label userAgeLabel = new Label("Quel est votre âge ?");
-		userAgeLabel.setFont(font);
+		userAgeLabel.setFont(bigFont);
 		
 		Slider userAgeSlider = new Slider();
 		userAgeSlider.setMin(15);
@@ -882,9 +898,11 @@ public class VocaView {
 		userAgeSlider.setPrefWidth(350);
 		
 		Label userAgeValueLabel = new Label ("35");
+		//userAgeValueLabel.setTextFill(Color.MAGENTA);
+
 		userAgeValueLabel.setBorder(new Border(new BorderStroke(Color.BLACK,BorderStrokeStyle.SOLID,CornerRadii.EMPTY,BorderWidths.FULL)));
 		
-		userAgeValueLabel.setFont(font);
+		userAgeValueLabel.setFont(smallFont);
 		
 		grid.add(userAgeLabel, 0, 2);
 		grid.add(userAgeSlider, 1, 2);
@@ -897,17 +915,17 @@ public class VocaView {
 		//HBox userAgeBox = new HBox(70, userAgeLabel, userAgeSlider, userAgeValueLabel);
 
 		Label userGenderLabel = new Label("Quel est votre genre ?");
-		userGenderLabel.setFont(font);
+		userGenderLabel.setFont(bigFont);
 		
 		ToggleGroup userGenderGroup = new ToggleGroup();
 		ToggleButton male = new RadioButton("Masculin");
-		male.setFont(font);
+		male.setFont(smallFont);
 		male.setToggleGroup(userGenderGroup);
 		ToggleButton female = new RadioButton("Féminin");
-		female.setFont(font);
+		female.setFont(smallFont);
 		female.setToggleGroup(userGenderGroup);
 		ToggleButton neutral = new RadioButton("Neutre");
-		neutral.setFont(font);
+		neutral.setFont(smallFont);
 		neutral.setToggleGroup(userGenderGroup);
 		female.setSelected(true);
 		
@@ -919,19 +937,22 @@ public class VocaView {
 		//HBox userGenderBox = new HBox(60, userGenderLabel, female, male, neutral);
 		
 		Label userZipcodeLabel = new Label("Quel est votre code postal ?");
-		userZipcodeLabel.setFont(font);
+		userZipcodeLabel.setFont(bigFont);
 		TextField userZipcodeTextField = new TextField();
-		userZipcodeTextField.setFont(font);
+		userZipcodeTextField.setFont(bigFont);
 		//HBox userZipcodeBox = new HBox(25, userZipcodeLabel, userZipcodeTextField);
 		grid.add(userZipcodeLabel, 0, 4);
 		grid.add(userZipcodeTextField, 1, 4);
 		//TODO : controle de la valeur
 
-		Label userQuestions = new Label ("Que vous inspirent les objets connectés ?");
-		userQuestions.setFont(font);
+		Label userQuestions = new Label ("Que vous inspirent les objets connectés ? (1 pour faible; 5 pour fort)");
+		//Label levelExplanation = new Label ("(1 pour faible; 5 pour fort)");
+		userQuestions.setFont(bigFont);
+		//levelExplanation.setFont(smallFont);
 		grid.add(userQuestions,0,5,2,1);
+		//grid.add(levelExplanation, 0, 6);
 		
-		String [] questions = {"Peur          ","Admiration", "Inquiétude ", "Interêt       ", "Aversion    ", "Curiosité   "};
+		String [] questions = {"Peur", "Admiration", "Inquiétude", "Interêt", "Aversion", "Curiosité"};
 
 		//VBox userQuestionBox = new VBox(20, userQuestions);
 		
@@ -948,14 +969,14 @@ public class VocaView {
 			userAnswerSliders[i].setSnapToTicks(true);
 
 			Label userAnswerValue = new Label("1");
-			userAnswerValue.setFont(font);
+			userAnswerValue.setFont(smallFont);
 			
 			userAnswerSliders[i].valueProperty().addListener((observable, oldValue, newValue) -> {
 				userAnswerValue.setText(Integer.toString(newValue.intValue()));
 			});
 			
 			Label label = new Label (questions[i]);
-			label.setFont(font);
+			label.setFont(bigFont);
 			
 //			HBox userAnswerBox = new HBox(50, label, userAnswerSliders[i], userAnswerValue);
 //			userQuestionBox.getChildren().add(userAnswerBox);
@@ -1034,6 +1055,4 @@ public class VocaView {
 		userInfo.show();
 		
 	}
-	
-
 }
