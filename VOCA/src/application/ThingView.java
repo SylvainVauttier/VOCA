@@ -154,6 +154,7 @@ public class ThingView extends Rectangle {
 //		ca.setInput(new DropShadow());
 //		this.setEffect(ca);
 		this.setStroke(Color.MEDIUMVIOLETRED);
+		this.setStrokeWidth(3);
 		//this.setEffect(new DropShadow());
 	}
 	
